@@ -1,0 +1,6 @@
+import { pgTable, text, integer, index } from 'drizzle-orm/pg-core';
+export const machines = pgTable('machines',{id:text('id').primaryKey(),data:text('data').notNull(),published:integer('published').notNull().default(0),updated:text('updated').notNull()});
+export const settings = pgTable('settings',{id:integer('id').primaryKey(),data:text('data').notNull()});
+export const admins = pgTable('admins',{id:integer('id').primaryKey(),userId:text('user_id').notNull()});
+export const inquiries = pgTable('inquiries',{id:text('id').primaryKey(),data:text('data').notNull(),status:text('status').notNull().default('Nueva'),notification:text('notification').notNull().default('pending'),created:text('created').notNull(),ipHash:text('ip_hash').notNull()},t=>[index('idx_inquiries_created').on(t.created),index('idx_inquiries_ip_created').on(t.ipHash,t.created)]);
+export const machineOffers = pgTable('machine_offers',{id:text('id').primaryKey(),data:text('data').notNull(),status:text('status').notNull().default('Nueva'),notification:text('notification').notNull().default('pending'),created:text('created').notNull(),ipHash:text('ip_hash').notNull()},t=>[index('idx_machine_offers_created').on(t.created),index('idx_machine_offers_ip_created').on(t.ipHash,t.created)]);

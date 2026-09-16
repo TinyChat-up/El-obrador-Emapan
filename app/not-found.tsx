@@ -1,0 +1,1 @@
+export default function NotFound(){return <main className="empty-state" style={{minHeight:'80vh'}}><h1>Esta máquina ya no está en el catálogo.</h1><p>Explora las referencias actuales o cuéntanos qué necesitas.</p><a className="btn btn-dark" href="/">Volver al catálogo</a></main>}

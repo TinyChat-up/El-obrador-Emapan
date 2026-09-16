@@ -1,0 +1,12 @@
+# Configuración de pnpm para la instalación en Vercel.
+# `overrides` debe coincidir con el bloque `overrides` de pnpm-lock.yaml:
+# si se cambia, hay que regenerar el lockfile.
+overrides:
+  miniflare>sharp: 0.35.4
+# Únicas dependencias con scripts de instalación en este proyecto.
+allowBuilds:
+  esbuild: true
+  fsevents: true
+  sharp: true
+  unrs-resolver: true
+  workerd: true

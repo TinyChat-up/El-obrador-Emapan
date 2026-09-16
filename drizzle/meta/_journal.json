@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1789297246685,
+      "tag": "0000_abandoned_blue_marvel",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1789371290122,
+      "tag": "0001_wooden_otto_octavius",
+      "breakpoints": true
+    }
+  ]
+}
