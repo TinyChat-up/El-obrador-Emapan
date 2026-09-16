@@ -48,12 +48,58 @@ Si `origin` ya existe, sustituye el comando `remote add` por `git remote set-url
 | `LIVE_INQUIRIES` | `true` para producción, `false` para pruebas |
 | `RESEND_API_KEY` | Opcional, clave de Resend para avisos automáticos |
 | `FROM_EMAIL` | Opcional, remitente de un dominio verificado en Resend |
+| `WHATSAPP_PHONE_ID` | Opcional, Phone number ID del remitente en Meta |
+| `WHATSAPP_TOKEN` | Opcional, token permanente del usuario de sistema |
+| `WHATSAPP_TO` | Opcional, tu número que recibe los avisos |
+| `WHATSAPP_TEMPLATE` | Opcional, por defecto `aviso_solicitud` |
+| `WHATSAPP_TEMPLATE_LANG` | Opcional, por defecto `es` |
 
 Las tres primeras son obligatorias. Ninguna clave secreta debe tener prefijo `NEXT_PUBLIC_`. Activa las variables en Production; si habilitas Preview, usa preferiblemente otro proyecto Supabase para no alterar datos reales. Después de cambiar variables, haz Redeploy.
 
 4. Pulsa Deploy. En Supabase > Authentication > URL Configuration pon la URL HTTPS final de Vercel (o tu dominio) como Site URL.
 5. Abre `/acceso`, inicia sesión con el usuario creado y entra en `/gestion`. La sesión caduca según el plazo del token de Supabase; vuelve a iniciar sesión cuando caduque.
 6. Completa los datos comerciales y de privacidad en Ajustes. Si guardas ajustes en el panel, esos valores prevalecen sobre las variables de correo, WhatsApp y consultas reales.
+
+## 3 bis. Avisos automáticos por WhatsApp (opcional)
+
+`WHATSAPP_NUMBER` **no envía nada**: es el enlace `wa.me` que ve el cliente al
+terminar el formulario, y solo te escribe si él pulsa el botón. Para que cada
+solicitud te llegue sola al móvil hay que conectar la WhatsApp Cloud API de Meta.
+
+Como los avisos van únicamente a tu propio número, cabe en el nivel de pruebas
+de Meta: número remitente prestado, hasta cinco destinatarios, sin verificar el
+negocio y sin coste. Si algún día quieres remitente propio o más destinatarios,
+tendrás que verificar el negocio y pagar por mensaje según la tarifa vigente.
+
+1. En `developers.facebook.com` crea una app de tipo **Empresa** y añade el
+   producto **WhatsApp**. Se genera una cuenta de WhatsApp Business de pruebas.
+2. En **WhatsApp > API Setup** copia el **Phone number ID** del remitente — es
+   un número largo, no un teléfono — y ponlo en `WHATSAPP_PHONE_ID`.
+3. En el desplegable **To** añade tu número personal como destinatario de
+   prueba y confirma el código que te llega por WhatsApp. Ese mismo número, en
+   formato internacional y solo con dígitos, va en `WHATSAPP_TO`.
+4. En **WhatsApp Manager > Plantillas de mensajes** crea una plantilla de
+   categoría **Utilidad**, idioma **Español**, nombre `aviso_solicitud`, con
+   exactamente tres variables en el cuerpo:
+
+   ```
+   Nuevo aviso de Emapan: {{1}}. Referencia: {{2}}. Datos: {{3}}
+   ```
+
+   Rellena los ejemplos que pide Meta y envíala a revisión. Suele aprobarse en
+   minutos. Si le pones otro nombre o idioma, indícalos en `WHATSAPP_TEMPLATE`
+   y `WHATSAPP_TEMPLATE_LANG`.
+5. El token que muestra API Setup **caduca en 24 horas**. Para producción crea
+   en **Business Settings > Usuarios del sistema** un usuario de sistema, dale
+   acceso a la app y genera un token con los permisos
+   `whatsapp_business_messaging` y `whatsapp_business_management`. Ese token no
+   caduca: es el de `WHATSAPP_TOKEN`.
+6. Añade las variables en Vercel y haz **Redeploy**. En `/gestion` el indicador
+   «Avisos WhatsApp» pasará a **Automático**.
+
+Los dos canales son independientes. Si uno falla, la solicitud queda guardada
+igualmente y la ficha muestra «Aviso parcial»; el botón de reintento del panel
+vuelve a lanzar los dos.
 
 ## 4. Comprobación en producción
 
@@ -70,3 +116,5 @@ Las fotografías admiten hasta **4 MiB por imagen** y las valoraciones **4 MiB e
 - https://supabase.com/docs/guides/database/connecting-to-postgres
 - https://supabase.com/docs/guides/auth/passwords
 - https://vercel.com/docs/functions/limitations
+- https://developers.facebook.com/docs/whatsapp/cloud-api/get-started
+- https://developers.facebook.com/docs/whatsapp/business-management-api/message-templates

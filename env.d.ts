@@ -18,5 +18,15 @@ declare namespace NodeJS {
     RESEND_API_KEY?: string;
     /** Opcional: remitente verificado en Resend. */
     FROM_EMAIL?: string;
+    /** WhatsApp Cloud API: token permanente del usuario de sistema de Meta. */
+    WHATSAPP_TOKEN?: string;
+    /** WhatsApp Cloud API: Phone number ID del remitente (no el teléfono). */
+    WHATSAPP_PHONE_ID?: string;
+    /** Tu número, que recibe los avisos. Internacional, solo dígitos. */
+    WHATSAPP_TO?: string;
+    /** Nombre de la plantilla aprobada. Por defecto aviso_solicitud. */
+    WHATSAPP_TEMPLATE?: string;
+    /** Idioma de la plantilla. Por defecto es. */
+    WHATSAPP_TEMPLATE_LANG?: string;
   }
 }
