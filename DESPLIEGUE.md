@@ -5,9 +5,9 @@ administración**: el catálogo y los datos de la empresa viven en el código
 (`lib/stock.ts` y `lib/catalog.ts`). De Supabase solo se usa Storage, para
 guardar las fotografías que envían los clientes desde `/vender`.
 
-Las solicitudes no se almacenan en ninguna parte: te llegan por correo y por
-WhatsApp. Si ningún canal está configurado, el formulario avisa al cliente de
-que no se ha podido registrar en lugar de perderla en silencio.
+Las solicitudes no se almacenan en ninguna parte: te llegan por correo. Si el
+correo no está configurado o falla, el formulario avisa al cliente de que no se
+ha podido registrar en lugar de perderla en silencio.
 
 ## 1. Supabase (solo para las fotos)
 
@@ -42,15 +42,10 @@ git push
 | `SUPABASE_URL` | URL del proyecto Supabase, sin barra final |
 | `SUPABASE_SERVICE_ROLE_KEY` | Clave secreta del servidor Supabase |
 | `NOTIFICATION_EMAIL` | Correo comercial que recibe solicitudes |
-| `WHATSAPP_NUMBER` | Número internacional, por ejemplo `34600111222` |
+| `WHATSAPP_NUMBER` | Número internacional para el botón «Continuar por WhatsApp», por ejemplo `34600111222` |
 | `LIVE_INQUIRIES` | `true` para producción, `false` para pruebas |
 | `RESEND_API_KEY` | Clave de Resend para el aviso por correo |
-| `FROM_EMAIL` | Remitente de un dominio verificado en Resend |
-| `WHATSAPP_PHONE_ID` | Phone number ID del remitente en Meta |
-| `WHATSAPP_TOKEN` | Token permanente del usuario de sistema |
-| `WHATSAPP_TO` | Tu número, que recibe los avisos |
-| `WHATSAPP_TEMPLATE` | Opcional, por defecto `aviso_solicitud` |
-| `WHATSAPP_TEMPLATE_LANG` | Opcional, por defecto `es` |
+| `FROM_EMAIL` | Opcional. Sin ella se usa `onboarding@resend.dev` |
 
 Ninguna clave lleva prefijo `NEXT_PUBLIC_`. **Después de cambiar variables hay
 que hacer Redeploy**: un despliegue ya creado no las ve.
@@ -71,51 +66,25 @@ Todo desde el código, sin panel:
   reales.
 - **Modelos nuevos de referencia** → array `demos` en `lib/catalog.ts`.
 
-## 4 bis. Avisos automáticos por WhatsApp
+## 4 bis. Avisos
 
-Sin base de datos, los avisos son el único registro de una solicitud, así que conviene tener los dos canales. `WHATSAPP_NUMBER` **no envía nada**: es el enlace `wa.me` que ve el cliente al
-terminar el formulario, y solo te escribe si él pulsa el botón. Para que cada
-solicitud te llegue sola al móvil hay que conectar la WhatsApp Cloud API de Meta.
+Sin base de datos, el correo es el único registro de una solicitud: sin
+`RESEND_API_KEY` y `NOTIFICATION_EMAIL`, los formularios en producción
+responden con error.
 
-Como los avisos van únicamente a tu propio número, cabe en el nivel de pruebas
-de Meta: número remitente prestado, hasta cinco destinatarios, sin verificar el
-negocio y sin coste. Si algún día quieres remitente propio o más destinatarios,
-tendrás que verificar el negocio y pagar por mensaje según la tarifa vigente.
-
-1. En `developers.facebook.com` crea una app de tipo **Empresa** y añade el
-   producto **WhatsApp**. Se genera una cuenta de WhatsApp Business de pruebas.
-2. En **WhatsApp > API Setup** copia el **Phone number ID** del remitente — es
-   un número largo, no un teléfono — y ponlo en `WHATSAPP_PHONE_ID`.
-3. En el desplegable **To** añade tu número personal como destinatario de
-   prueba y confirma el código que te llega por WhatsApp. Ese mismo número, en
-   formato internacional y solo con dígitos, va en `WHATSAPP_TO`.
-4. En **WhatsApp Manager > Plantillas de mensajes** crea una plantilla de
-   categoría **Utilidad**, idioma **Español**, nombre `aviso_solicitud`, con
-   exactamente tres variables en el cuerpo:
-
-   ```
-   Nuevo aviso de Emapan: {{1}}. Referencia: {{2}}. Datos: {{3}}
-   ```
-
-   Rellena los ejemplos que pide Meta y envíala a revisión. Suele aprobarse en
-   minutos. Si le pones otro nombre o idioma, indícalos en `WHATSAPP_TEMPLATE`
-   y `WHATSAPP_TEMPLATE_LANG`.
-5. El token que muestra API Setup **caduca en 24 horas**. Para producción crea
-   en **Business Settings > Usuarios del sistema** un usuario de sistema, dale
-   acceso a la app y genera un token con los permisos
-   `whatsapp_business_messaging` y `whatsapp_business_management`. Ese token no
-   caduca: es el de `WHATSAPP_TOKEN`.
-6. Añade las variables en Vercel y haz **Redeploy**. En `/gestion` el indicador
-   «Avisos WhatsApp» pasará a **Automático**.
-
-Los dos canales son independientes. Si uno falla, la solicitud queda guardada
-igualmente y la ficha muestra «Aviso parcial»; el botón de reintento del panel
-vuelve a lanzar los dos.
+Sin `FROM_EMAIL` se envía desde `onboarding@resend.dev`, el remitente de
+pruebas de Resend, que **solo entrega al correo con el que creaste la cuenta de
+Resend**: ese debe ser `NOTIFICATION_EMAIL`. Para usar otro destinatario,
+verifica un dominio en Resend → Domains y pon `FROM_EMAIL=avisos@tudominio.es`.
+El correo llega con «Responder a» apuntando al cliente, así que puedes
+contestarle directamente. `WHATSAPP_NUMBER` **no envía nada**: es el
+enlace `wa.me` que ve el cliente al terminar el formulario, y solo te escribe si
+él pulsa el botón.
 
 ## 5. Comprobación en producción
 
 - Abre el catálogo, una ficha y el comparador.
-- Envía una consulta y comprueba que te llega el correo y el WhatsApp.
+- Envía una consulta y comprueba que te llega el correo.
 - Envía una valoración desde `/vender` con fotografías y comprueba que los
   enlaces del aviso abren las imágenes.
 - Con `LIVE_INQUIRIES=false` los formularios funcionan pero no envían nada.
@@ -127,5 +96,3 @@ accesibles para quien tenga su URL; no subas documentos confidenciales.
 ## Referencias oficiales
 
 - https://vercel.com/docs/functions/limitations
-- https://developers.facebook.com/docs/whatsapp/cloud-api/get-started
-- https://developers.facebook.com/docs/whatsapp/business-management-api/message-templates

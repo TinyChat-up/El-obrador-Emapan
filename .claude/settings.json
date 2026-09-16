@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc *)",
+      "Bash(grep -nE \"^\\\\.site-header|^\\\\.machine-card|^\\\\.btn[ ,{]|^\\\\.sat-intro|^\\\\.archive-poster|^\\\\.benefit-bar|^\\\\.wrap|^body|^\\\\.eyebrow|--emapan|^\\\\.brands-panel\" app/globals.css)",
+      "Bash(sed -i '' 's/await new Promise\\(r=>setTimeout\\(r,60\\)\\)}scrollTo\\(0,0\\)/await new Promise\\(r=>setTimeout\\(r,120\\)\\)}await new Promise\\(r=>setTimeout\\(r,900\\)\\);scrollTo\\(0,0\\)/' shot.mjs)",
+      "Bash(node shot.mjs http://localhost:3123/ d.png 1440 900 1 1200)",
+      "Bash(node shot.mjs http://localhost:3123/ m.png 400 800 1 1200)",
+      "Bash(node dbg.mjs)",
+      "Bash(node nav.mjs)",
+      "Bash(node shot.mjs http://localhost:3123/ mt.png 400 800 0 1200)",
+      "Bash(node shot.mjs http://localhost:3123/vender v.png 400 800 0 1200)",
+      "Bash(node shot.mjs http://localhost:3123/comparar c.png 1440 900 1 1200)",
+      "Bash(node shot.mjs http://localhost:3123/vender vd.png 1440 900 1 1200)",
+      "Bash(node shot.mjs http://localhost:3123/privacidad p.png 400 800 0 800)",
+      "Bash(npm i *)",
+      "Bash(/private/tmp/claude-501/-Users-alejandropayavarea-Desktop-el-obrador-emapan/bc1dbe49-795e-40c8-aa4a-b2c1ac43b1d2/scratchpad/node_modules/.bin/tsx --tsconfig tsconfig.json /private/tmp/claude-501/-Users-alejandropayavarea-Desktop-el-obrador-emapan/bc1dbe49-795e-40c8-aa4a-b2c1ac43b1d2/scratchpad/mail.test.ts)",
+      "Bash(/private/tmp/claude-501/-Users-alejandropayavarea-Desktop-el-obrador-emapan/bc1dbe49-795e-40c8-aa4a-b2c1ac43b1d2/scratchpad/node_modules/.bin/tsx --tsconfig tsconfig.json /private/tmp/claude-501/-Users-alejandropayavarea-Desktop-el-obrador-emapan/bc1dbe49-795e-40c8-aa4a-b2c1ac43b1d2/scratchpad/mail.test.mts)",
+      "Bash(pkill -f \"next dev -p 3123\")",
+      "Bash(npx eslint *)",
+      "Bash(npx next *)",
+      "Bash(git stash *)"
+    ]
+  }
+}

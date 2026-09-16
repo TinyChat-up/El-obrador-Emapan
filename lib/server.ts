@@ -61,74 +61,54 @@ export function tooManyRequests(req: Request, limit: number, windowMs = 3600000)
 
 // ─── Avisos ───────────────────────────────────────────────────────────────
 
-const line = (k: string, v: unknown) =>
-  `${k}: ${Array.isArray(v) ? v.join('\n  ') : typeof v === 'object' && v !== null ? JSON.stringify(v) : v}`;
+const labels: Record<string, string> = {
+  reference: 'Referencia', name: 'Nombre', company: 'Empresa', email: 'Correo', phone: 'Teléfono',
+  province: 'Localidad', contact: 'Prefiere contacto', needs: 'Necesidades', machines: 'Máquinas',
+  operation: 'Modalidad', brand: 'Marca', model: 'Modelo', year: 'Año', serial: 'Nº de serie',
+  working: 'Funcionamiento', condition: 'Estado', expectedPrice: 'Precio esperado (€)',
+  description: 'Descripción', photos: 'Fotografías',
+};
+const hidden = new Set(['id', 'machineIds', 'privacyAccepted', 'privacyVersion', 'demo', 'website']);
+const value = (v: unknown) =>
+  Array.isArray(v)
+    ? '\n  ' + v.map(x => typeof x === 'object' && x !== null
+        ? [(x as Record<string, unknown>).brand, (x as Record<string, unknown>).model, (x as Record<string, unknown>).condition].filter(Boolean).join(' · ')
+        : String(x)).join('\n  ')
+    : typeof v === 'object' && v !== null ? JSON.stringify(v) : String(v);
 const detail = (data: Record<string, unknown>) =>
-  Object.entries(data).map(([k, v]) => line(k, v)).join('\n');
+  Object.entries(data)
+    .filter(([k, v]) => !hidden.has(k) && v !== '' && v !== null && v !== undefined && !(Array.isArray(v) && !v.length))
+    .map(([k, v]) => `${labels[k] ?? k}: ${value(v)}`)
+    .join('\n');
 
-// Las variables de una plantilla de WhatsApp no admiten saltos de línea,
-// tabuladores ni más de cuatro espacios seguidos.
-const skip = new Set(['machines', 'machineIds', 'notes', 'privacyVersion', 'privacyAccepted', 'reference', 'demo', 'id', 'website']);
-function summary(data: Record<string, unknown>) {
-  const parts = Object.entries(data)
-    .filter(([k, v]) => !skip.has(k) && v !== '' && v !== null && v !== undefined)
-    .map(([k, v]) => line(k, v).replace(/\n\s*/g, ' '));
-  const list = data.machines;
-  if (Array.isArray(list) && list.length)
-    parts.push('máquinas: ' + (list as { brand?: string; model?: string }[]).map(m => `${m.brand ?? ''} ${m.model ?? ''}`.trim()).join(', '));
-  return parts.join(' · ');
-}
-const param = (value: string) => ({ type: 'text', text: (value.replace(/\s+/g, ' ').trim() || '—').slice(0, 900) });
-
+// Sin dominio verificado, Resend solo deja enviar desde onboarding@resend.dev
+// y únicamente al correo de la propia cuenta: por eso NOTIFICATION_EMAIL
+// manda sobre el correo público de lib/catalog.ts.
 async function notifyEmail(id: string, data: Record<string, unknown>, s: Settings, subject: string) {
   const e = runtime();
-  if (!e.RESEND_API_KEY || !e.FROM_EMAIL || !s.email) return 'not_configured';
+  const to = e.NOTIFICATION_EMAIL || s.email;
+  if (!e.RESEND_API_KEY || !to) return 'not_configured';
+  const replyTo = typeof data.email === 'string' && data.email ? data.email : undefined;
   try {
     const r = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: { Authorization: `Bearer ${e.RESEND_API_KEY}`, 'Content-Type': 'application/json', 'Idempotency-Key': `inquiry-${id}` },
-      body: JSON.stringify({ from: e.FROM_EMAIL, to: [s.email], subject: `${subject} ${id}`, text: detail(data) }),
-      signal: AbortSignal.timeout(8000),
-    });
-    if (!r.ok) console.error('Resend notification failed', r.status);
-    return r.ok ? 'sent' : 'failed';
-  } catch { return 'failed'; }
-}
-
-// WhatsApp Cloud API de Meta. El aviso lo inicia el servidor fuera de la
-// ventana de 24 horas, así que debe enviarse con una plantilla aprobada.
-export function whatsappReady() {
-  const e = runtime();
-  return !!(e.WHATSAPP_TOKEN && e.WHATSAPP_PHONE_ID && e.WHATSAPP_TO);
-}
-async function notifyWhatsApp(id: string, data: Record<string, unknown>, subject: string) {
-  const e = runtime();
-  const to = (e.WHATSAPP_TO || '').replace(/\D/g, '');
-  if (!e.WHATSAPP_TOKEN || !e.WHATSAPP_PHONE_ID || !to) return 'not_configured';
-  try {
-    const r = await fetch(`https://graph.facebook.com/v23.0/${e.WHATSAPP_PHONE_ID}/messages`, {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${e.WHATSAPP_TOKEN}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        messaging_product: 'whatsapp', recipient_type: 'individual', to, type: 'template',
-        template: {
-          name: e.WHATSAPP_TEMPLATE || 'aviso_solicitud',
-          language: { code: e.WHATSAPP_TEMPLATE_LANG || 'es' },
-          components: [{ type: 'body', parameters: [param(subject), param(id), param(summary(data))] }],
-        },
+        from: e.FROM_EMAIL || 'El Obrador <onboarding@resend.dev>',
+        to: [to],
+        reply_to: replyTo,
+        subject: `${subject} ${id}`,
+        text: detail(data),
       }),
       signal: AbortSignal.timeout(8000),
     });
-    if (!r.ok) console.error('WhatsApp notification failed', r.status, (await r.text()).slice(0, 300));
+    if (!r.ok) console.error('Resend notification failed', r.status, (await r.text()).slice(0, 300));
     return r.ok ? 'sent' : 'failed';
   } catch { return 'failed'; }
 }
 
-// Sin base de datos el aviso ES la solicitud: si ningún canal sale, hay que
-// decírselo al cliente para que vuelva a intentarlo o llame por teléfono.
+// Sin base de datos el correo ES la solicitud: si no sale, hay que decírselo
+// al cliente para que vuelva a intentarlo o llame por teléfono.
 export async function notifyInquiry(id: string, data: Record<string, unknown>, s: Settings, subject = 'Nueva propuesta') {
-  const states = await Promise.all([notifyEmail(id, data, s, subject), notifyWhatsApp(id, data, subject)]);
-  if (states.every(x => x === 'not_configured')) return 'not_configured';
-  if (states.every(x => x === 'sent' || x === 'not_configured')) return 'sent';
-  return states.some(x => x === 'sent') ? 'partial' : 'failed';
+  return notifyEmail(id, data, s, subject);
 }

@@ -9,13 +9,13 @@ export type Settings={brand:string;email:string;whatsapp:string;legalName:string
 export const settings:Settings={
  brand:'El Obrador de Emapan S.L.',
  legalName:'Emapan S.L.',
- taxId:'',                  // NIF
- address:'',                // dirección fiscal completa
- email:'',                  // correo comercial que recibe las consultas
- privacyEmail:'',           // correo para asuntos de privacidad
- whatsapp:'',               // internacional sin + ni espacios: 34600111222
+ taxId:'B53599692',
+ address:'C. los Luceros, 8, 03600 Elda, Alicante',
+ email:'emapan2@hotmail.com',       // correo de contacto que ve el cliente
+ privacyEmail:'emapan2@hotmail.com', // correo para asuntos de privacidad
+ whatsapp:'34615619104',            // internacional sin + ni espacios
  showDemo:false,
- liveInquiries:false,       // true cuando quieras recibir solicitudes reales
+ liveInquiries:true,       // true cuando quieras recibir solicitudes reales
 };
 export const partnerBrands=['LABUS','Carpigiani','Roboqbo','Mondial Forni','FM','IFI','WIESHEU'];
 export const categories=['Todas','Panadería','Heladería','Pastelería','Hostelería'];
