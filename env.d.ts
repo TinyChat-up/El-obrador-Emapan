@@ -2,11 +2,9 @@
 // Environment Variables con estos mismos nombres (ver .env.example).
 declare namespace NodeJS {
   interface ProcessEnv {
-    /** URI del Transaction pooler de Supabase (puerto 6543). Obligatoria. */
-    DATABASE_URL?: string;
-    /** URL del proyecto Supabase, sin barra final. Obligatoria. */
+    /** URL del proyecto Supabase, sin barra final. Necesaria para las fotos. */
     SUPABASE_URL?: string;
-    /** Clave de servidor de Supabase (service_role o secret). Obligatoria. */
+    /** Clave de servidor de Supabase (service_role o secret). Para las fotos. */
     SUPABASE_SERVICE_ROLE_KEY?: string;
     /** Correo comercial que recibe las solicitudes. */
     NOTIFICATION_EMAIL?: string;

@@ -1,3 +1,8 @@
 # Operaciones
 
-La guía vigente de esta exportación es EMPEZAR-CON-CODEX.md. Describe la activación con admins fila 2, las limitaciones de desarrollo local y los servicios pendientes.
+La guía vigente es [DESPLIEGUE.md](DESPLIEGUE.md), y el catálogo se gestiona
+desde el código según explica el [README](README.md).
+
+`EMPEZAR-CON-CODEX.md` describe el montaje anterior en Cloudflare, con panel de
+administración y base de datos D1. Nada de eso sigue en uso: se conserva solo
+como antecedente.

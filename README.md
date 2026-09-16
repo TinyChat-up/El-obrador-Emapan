@@ -1,14 +1,29 @@
 # El Obrador de Emapan
 
-Catálogo de maquinaria, comparador, solicitudes comerciales y panel privado.
+Catálogo de maquinaria de obrador, comparador y formularios de contacto.
+**Todo el contenido se gestiona desde el código**: no hay panel de
+administración ni base de datos.
+
+## Gestionar el catálogo
+
+| Qué quieres hacer | Dónde |
+| --- | --- |
+| Publicar, editar o retirar una máquina de segunda mano | [`lib/stock.ts`](lib/stock.ts) |
+| Cambiar los datos de la empresa (NIF, dirección, correo, WhatsApp) | [`lib/catalog.ts`](lib/catalog.ts), constante `settings` |
+| Añadir o quitar modelos nuevos de referencia | [`lib/catalog.ts`](lib/catalog.ts), array `demos` |
+| Fotografías del catálogo | `public/images/` |
+
+Editas, `git push`, y Vercel publica solo.
 
 ## Publicación
 
-Consulta [DESPLIEGUE.md](DESPLIEGUE.md) para crear la base en Supabase, configurar Vercel y subir a GitHub. No necesitas servicios locales.
+Consulta [DESPLIEGUE.md](DESPLIEGUE.md). No necesitas servicios locales.
 
-- SQL: [esquema y Storage](supabase/01-schema.sql) y [administrador](supabase/02-admin.sql).
+- SQL: [almacén de fotografías](supabase/01-storage.sql), lo único que hace falta en Supabase.
 - Variables del servidor: [.env.example](.env.example).
-- Producción: Next.js + Supabase PostgreSQL, Auth y Storage.
+- Producción: Next.js en Vercel + Supabase Storage para las fotos que envían los clientes.
 - Comandos de plataforma: `pnpm install --frozen-lockfile` y `pnpm build`.
 
-Los archivos de Cloudflare/Vinext, `drizzle/`, `OPERATIONS.md` y los documentos de exportación se conservan como antecedentes; no son instrucciones del despliegue actual. El procedimiento vigente es DESPLIEGUE.md.
+Los archivos de Cloudflare/Vinext y los documentos de exportación
+(`EMPEZAR-CON-CODEX.md`, `OPERATIONS.md`, `EXPORTACION.json`) se conservan como
+antecedentes históricos; no describen el despliegue actual.

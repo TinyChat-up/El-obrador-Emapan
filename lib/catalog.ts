@@ -1,7 +1,22 @@
 export type Photo={url:string;label:string;kind:'exterior'|'interior'|'detail';source?:string};
 export type Machine={id:string;brand:string;model:string;comparisonKey?:string;type:string;category:string;condition:'Nueva'|'Reacondicionada';description:string;functioning:string;images:Photo[];year:number|null;price:number|null;capacity:string;power:string;dimensions:string;voltage:string;warranty:string;leadTime:string;inspection:string;workDone:string;defects:string;life:string;availability:string;isDemo:boolean;published:boolean;source:string};
 export type Settings={brand:string;email:string;whatsapp:string;legalName:string;taxId:string;address:string;privacyEmail:string;showDemo:boolean;liveInquiries:boolean};
-export const defaults:Settings={brand:'El Obrador de Emapan S.L.',email:'',whatsapp:'',legalName:'Emapan S.L.',taxId:'',address:'',privacyEmail:'',showDemo:false,liveInquiries:false};
+// ─── DATOS DE TU EMPRESA ─────────────────────────────────────────────────
+// Edita aquí y haz push. Los campos legales son obligatorios para publicar
+// consultas reales: sin ellos la web se queda en modo demostración.
+// email, whatsapp y liveInquiries pueden dejarse vacíos aquí y fijarse con
+// las variables NOTIFICATION_EMAIL, WHATSAPP_NUMBER y LIVE_INQUIRIES.
+export const settings:Settings={
+ brand:'El Obrador de Emapan S.L.',
+ legalName:'Emapan S.L.',
+ taxId:'',                  // NIF
+ address:'',                // dirección fiscal completa
+ email:'',                  // correo comercial que recibe las consultas
+ privacyEmail:'',           // correo para asuntos de privacidad
+ whatsapp:'',               // internacional sin + ni espacios: 34600111222
+ showDemo:false,
+ liveInquiries:false,       // true cuando quieras recibir solicitudes reales
+};
 export const partnerBrands=['LABUS','Carpigiani','Roboqbo','Mondial Forni','FM','IFI','WIESHEU'];
 export const categories=['Todas','Panadería','Heladería','Pastelería','Hostelería'];
 export const money=(n:number|null)=>n===null?'A presupuestar':new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(n);
