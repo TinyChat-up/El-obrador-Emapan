@@ -14,7 +14,7 @@ export async function catalog(all=false){
  return {settings,machines:all?[...used,...refs]:used.filter(m=>m.published&&!['Vendida','Retirada'].includes(m.availability)),referenceMachines};
 }
 export async function owner(){const user=await getUser();const expected=await db().prepare('SELECT user_id FROM admins WHERE id=2').first<{user_id:string}>();if(!user||!expected||user.userId!==expected.user_id)throw new Error('Acceso restringido');return user;}
-export function sameOrigin(req:Request){const origin=req.headers.get('origin');if(!origin||origin!==new URL(req.url).origin)throw new Error('Origen no permitido');}
+export function sameOrigin(req:Request){const origin=req.headers.get('origin');const expected=new URL(req.url).origin;if(!origin||origin!==expected)throw new Error(`Origen no permitido: ${origin||'sin cabecera Origin'} frente a ${expected}`);}
 export function fail(e:unknown,status=400){console.error(e instanceof Error?e.message:'Request failed');return Response.json({error:e instanceof Error?e.message:'No se ha podido completar la operación'},{status,headers:{'Cache-Control':'no-store'}});}
 // Texto completo de la solicitud, para el cuerpo del correo.
 const detail=(data:Record<string,unknown>)=>Object.entries(data).map(([k,v])=>`${k}: ${typeof v==='object'?JSON.stringify(v):v}`).join('\n');
