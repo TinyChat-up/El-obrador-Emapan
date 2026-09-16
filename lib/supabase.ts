@@ -1,7 +1,8 @@
 export function supabaseConfig() {
- const url=process.env.SUPABASE_URL;
- const key=process.env.SUPABASE_SERVICE_ROLE_KEY;
- if(!url||!key)throw new Error('Falta configurar Supabase');
+ // trim(): al pegar valores en Vercel es fácil arrastrar un salto de línea.
+ const url=process.env.SUPABASE_URL?.trim();
+ const key=process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
+ if(!url||!key)throw new Error('Falta configurar Supabase: '+[!url&&'SUPABASE_URL',!key&&'SUPABASE_SERVICE_ROLE_KEY'].filter(Boolean).join(' y ')+' no tiene valor en este despliegue');
  return {url:url.replace(/\/$/,''),key};
 }
 export const storage={
