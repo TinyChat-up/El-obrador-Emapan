@@ -57,9 +57,7 @@ export async function POST(req: Request) {
     return Response.json({
       reference,
       notification,
-      whatsappUrl: settings.whatsapp ? `https://wa.me/${settings.whatsapp}?text=${encodeURIComponent(summary)}` : '',
-      emailUrl: settings.email ? `mailto:${settings.email}?subject=${encodeURIComponent('Máquina ofrecida ' + reference)}&body=${encodeURIComponent(summary)}` : '',
-    }, { status: 201, headers: { 'Cache-Control': 'no-store' } });
+      whatsappUrl: settings.whatsapp ? `https://wa.me/${settings.whatsapp}?text=${encodeURIComponent(summary)}` : '',    }, { status: 201, headers: { 'Cache-Control': 'no-store' } });
   } catch (e) {
     console.error('Machine offer failed', e instanceof Error ? e.message : '');
     return fail(new Error('No hemos podido guardar la valoración. Revisa los datos e inténtalo de nuevo.'), 503);

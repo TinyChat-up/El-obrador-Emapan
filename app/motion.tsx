@@ -70,3 +70,16 @@ export default function Motion() {
 
   return <div className="scroll-progress" aria-hidden="true" />;
 }
+
+// Sello de confirmación: el círculo y la marca se dibujan y saltan unas chispas.
+export function SuccessMark() {
+  return (
+    <span className="success-mark" aria-hidden="true">
+      <svg viewBox="0 0 64 64">
+        <circle cx="32" cy="32" r="29" />
+        <path d="M19 33.5l9 9 18-19" />
+      </svg>
+      {Array.from({ length: 8 }, (_, i) => <i key={i} style={{ '--a': `${i * 45}deg` } as React.CSSProperties} />)}
+    </span>
+  );
+}

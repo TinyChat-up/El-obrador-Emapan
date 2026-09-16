@@ -8,7 +8,7 @@
 .scroll-progress{position:fixed;top:0;left:0;right:0;height:3px;z-index:60;pointer-events:none;background:var(--vintage-blue);transform-origin:0 50%;transform:scaleX(var(--progress,0))}
 @media(min-width:761px){
  .site-header{position:sticky;top:0;z-index:50;transition:box-shadow .3s,background-color .3s}
- .site-header.is-scrolled{background:#ffffffeb;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 10px 30px -18px #123d7866}
+ .site-header.is-scrolled{background:#fff;box-shadow:0 10px 30px -18px #123d7866}
 }
 .site-header nav a{transition:color .2s}
 .site-header nav a:after{content:'';position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--vintage-blue);transform:scaleX(0);transform-origin:left;transition:transform .3s}
@@ -116,6 +116,47 @@
 .inquiry-form input,.inquiry-form textarea{transition:border-color .2s,box-shadow .2s,background-color .2s}
 .inquiry-form input:focus,.inquiry-form textarea:focus{background:#fff;border-color:var(--vintage-ink);box-shadow:0 0 0 3px #cfe1fb}
 
+/* ─── Confirmación de envío ─── */
+.success-mark{position:relative;display:block;width:84px;height:84px;margin:0 auto 22px;flex:none}
+.success-mark svg{width:100%;height:100%;fill:none;stroke-linecap:round;stroke-linejoin:round;animation:stamp .5s .05s cubic-bezier(.2,.7,.2,1) both}
+.success-mark circle{stroke:var(--vintage-ink);stroke-width:3;fill:#e1ecfb;stroke-dasharray:183;stroke-dashoffset:183;animation:draw .6s .1s ease-out forwards}
+.success-mark path{stroke:var(--vintage-blue);stroke-width:5;stroke-dasharray:44;stroke-dashoffset:44;animation:draw .45s .6s ease-out forwards}
+.success-mark i{position:absolute;left:50%;top:50%;width:6px;height:6px;margin:-3px;background:var(--vintage-blue);opacity:0;transform:rotate(var(--a)) translateY(0);animation:spark .7s .75s ease-out forwards}
+.success-mark i:nth-child(odd){background:#b9d4f3;width:8px;height:8px;margin:-4px}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes stamp{from{transform:scale(.5) rotate(-12deg);opacity:0}to{transform:none;opacity:1}}
+@keyframes spark{0%{opacity:1;transform:rotate(var(--a)) translateY(-30px) scale(1)}100%{opacity:0;transform:rotate(var(--a)) translateY(-58px) scale(.3)}}
+.offer-success{border-radius:0;border:1px solid var(--vintage-ink);border-top:4px solid var(--vintage-ink);padding:44px 40px;box-shadow:8px 8px 0 #e1ecfb}
+.offer-success h2,.request-success h3{font-family:Georgia,'Times New Roman',serif;font-weight:700;color:var(--vintage-ink);letter-spacing:-1px}
+.offer-success>*:not(.success-mark),.request-success>*:not(.success-mark){animation:rise .6s cubic-bezier(.2,.7,.2,1) both}
+.offer-success>:nth-child(2),.request-success>:nth-child(2){animation-delay:.55s}
+.offer-success>:nth-child(3),.request-success>:nth-child(3){animation-delay:.65s}
+.offer-success>:nth-child(4),.request-success>:nth-child(4){animation-delay:.75s}
+.offer-success>:nth-child(5),.request-success>:nth-child(5){animation-delay:.85s}
+.offer-success>:nth-child(6),.request-success>:nth-child(6){animation-delay:.95s}
+.offer-success>p{margin:10px auto 26px;max-width:420px}
+.next-steps{list-style:none;margin:0 auto 26px;padding:0;max-width:440px;text-align:left;display:grid;gap:0}
+.next-steps li{display:grid;grid-template-columns:34px 1fr;gap:14px;padding:14px 0;border-top:1px solid #d7e3f2;position:relative}
+.next-steps li:last-child{border-bottom:1px solid #d7e3f2}
+.next-steps b{width:34px;height:34px;display:grid;place-items:center;border:1px solid var(--vintage-ink);font-family:ui-monospace,monospace;font-weight:500;color:var(--vintage-ink);background:#fff}
+.next-steps li:first-child b{background:var(--vintage-ink);color:#fff}
+.next-steps span{font-size:13px;line-height:1.55;color:#506484}
+.next-steps strong{display:block;font-size:15px;color:var(--vintage-ink)}
+.success-ref{display:block;font-size:12px;color:#506484;font-family:ui-monospace,monospace;letter-spacing:.5px}
+.success-ref code{margin-left:6px;padding:4px 8px;background:#f4f8ff;border:1px solid #cad7e8;color:var(--vintage-ink)}
+.success-whatsapp{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:26px;padding-top:22px;border-top:3px double var(--vintage-rule);width:100%}
+.success-whatsapp>span{font-size:13px;color:#506484}
+.btn-whatsapp{white-space:nowrap;background:#fff;color:var(--vintage-ink);border:1px solid var(--vintage-ink)}
+.btn-whatsapp svg{color:#1faa55}
+.btn-whatsapp:hover{background:#1faa55;border-color:#1faa55;color:#fff}
+.btn-whatsapp:hover svg{color:#fff;transform:none}
+.request-success{gap:12px}
+.request-success .success-mark{margin-bottom:6px}
+.request-success>.btn-outline{margin-top:6px}
+.btn.is-sending{position:relative;overflow:hidden;opacity:1}
+.btn.is-sending:after{content:'';position:absolute;left:0;bottom:0;height:3px;width:40%;background:#b9d4f3;animation:sending 1.2s ease-in-out infinite}
+@keyframes sending{from{transform:translateX(-100%)}to{transform:translateX(250%)}}
+
 /* ─── Botón flotante en móvil ─── */
 .float-cta{display:none}
 @media(max-width:760px){
@@ -170,5 +211,29 @@
  .brand-marquee-row{flex-wrap:wrap;width:auto;row-gap:10px}
  .brand-marquee-row span[aria-hidden=true]{display:none}
  .sat-intro h1 em{background-size:100% 100%}
+ .success-mark circle,.success-mark path{stroke-dashoffset:0}
+ .success-mark i{display:none}
  .machine-card:hover,.ref-card:hover,.sell-model-grid article:hover{transform:none}
+}
+
+/* ─── Ajustes de móvil ─── */
+@media(max-width:760px){
+ .emapan-header-logo{width:118px}
+ .site-header .emapan-wordmark>span{font-size:17px}
+ .site-header .emapan-wordmark>small{font-size:10px}
+ .sat-intro{gap:22px;padding-bottom:30px}
+ .sat-intro h1{margin:18px 0}
+ .vintage-caption-line{display:none}
+ .archive-poster{max-width:210px}
+ .archive-poster img{max-height:250px}
+ .archive-poster-frame{padding:8px}
+ .archive-poster figcaption{font-size:11px;margin-top:12px}
+ .stock-soon-dot{display:none}
+ .stock-soon strong{font-size:19px}
+ .ref-card-actions .btn{white-space:nowrap;gap:6px}
+ .ref-card-actions .btn svg{display:none}
+ .offer-form .choice[data-slot],.offer-form [data-slot=select-trigger]{width:100%}
+ .offer-success{padding:32px 20px}
+ .next-steps li{gap:12px}
+ .btn-whatsapp{padding-left:16px;padding-right:16px}
 }
