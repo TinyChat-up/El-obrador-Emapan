@@ -13,6 +13,12 @@ export async function catalog(all=false){
  const used=records.filter(m=>m.condition==='Reacondicionada'&&!m.isDemo);
  return {settings,machines:all?[...used,...refs]:used.filter(m=>m.published&&!['Vendida','Retirada'].includes(m.availability)),referenceMachines};
 }
+// El catálogo no debe tumbar el render: un fallo de base de datos dejaba la
+// página en «Minified React error #441», sin motivo visible en producción.
+export async function safeCatalog(all=false):Promise<{settings:Settings;machines:Machine[];referenceMachines:Machine[];unavailable:boolean}>{
+ try{return {...await catalog(all),unavailable:false};}
+ catch(e){console.error('Catalogue unavailable',e instanceof Error?e.message:'unknown');return {settings:defaults,machines:[],referenceMachines:demos,unavailable:true};}
+}
 export async function owner(){const user=await getUser();const expected=await db().prepare('SELECT user_id FROM admins WHERE id=2').first<{user_id:string}>();if(!user||!expected||user.userId!==expected.user_id)throw new Error('Acceso restringido');return user;}
 export function sameOrigin(req:Request){const origin=req.headers.get('origin');const expected=new URL(req.url).origin;if(!origin||origin!==expected)throw new Error(`Origen no permitido: ${origin||'sin cabecera Origin'} frente a ${expected}`);}
 export function fail(e:unknown,status=400){console.error(e instanceof Error?e.message:'Request failed');return Response.json({error:e instanceof Error?e.message:'No se ha podido completar la operación'},{status,headers:{'Cache-Control':'no-store'}});}

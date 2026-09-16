@@ -1,8 +1,9 @@
 import postgres from 'postgres';
 let connection: ReturnType<typeof postgres> | undefined;
 function client() {
- if (!process.env.DATABASE_URL) throw new Error('Falta DATABASE_URL');
- return connection ??= postgres(process.env.DATABASE_URL, {prepare:false, max:1, idle_timeout:20, connect_timeout:10, ssl:'require'});
+ const url=process.env.DATABASE_URL?.trim();
+ if (!url) throw new Error('Falta DATABASE_URL: la variable no tiene valor en este despliegue');
+ return connection ??= postgres(url, {prepare:false, max:1, idle_timeout:20, connect_timeout:10, ssl:'require'});
 }
 // Keeps the existing parameterized queries while using PostgreSQL on Supabase.
 export function db() {
