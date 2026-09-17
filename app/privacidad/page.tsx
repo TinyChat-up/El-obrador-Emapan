@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { officialBrands, phoneDisplay } from '@/lib/catalog';
+import { phoneDisplay, serviceBrands } from '@/lib/catalog';
 import { getSettings } from '@/lib/server';
 import { siteUrl } from '@/lib/site';
 import { Header } from '@/components/site/header';
@@ -90,7 +90,7 @@ export default function Privacy() {
         <h2 id="condiciones">4. Condiciones, fotografías y marcas</h2>
         <p>En esta web no se compra ni se paga nada. El precio, los impuestos, la disponibilidad, la configuración, el transporte, la instalación, el plazo y la garantía se confirman por escrito en cada propuesta. Las tarifas de intermediación de «Vende tu máquina» son orientativas y requieren un acuerdo escrito.</p>
         <p>Las fichas de segunda mano muestran fotografías reales de cada unidad. Los modelos nuevos se ilustran con imágenes de sus fabricantes, que no acreditan el estado ni la configuración de una unidad concreta.</p>
-        <p>{s.legalName} es servicio técnico oficial de {officialBrands.join(', ')}. El resto de marcas que aparecen en la web pertenecen a sus titulares, y su mención no implica ninguna relación oficial ni distribución exclusiva.</p>
+        <p>{s.legalName} presta servicio técnico a maquinaria de {serviceBrands.join(", ")}. Todas las marcas que aparecen en la web pertenecen a sus titulares, y su mención no implica ninguna relación oficial ni distribución exclusiva.</p>
         <p>Los textos, el diseño y las fotografías propias de esta web pertenecen a {s.legalName}. No se permite reproducirlos sin autorización.</p>
 
         <p className="legal-updated">Última actualización: {UPDATED}.</p>

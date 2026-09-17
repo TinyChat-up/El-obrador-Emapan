@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     template: "%s | El Obrador de Emapan",
   },
   description:
-    "Maquinaria de segunda mano para panadería, pastelería, heladería y hostelería, revisada en taller y con garantía por escrito. Servicio técnico oficial en Alicante. Envíos a toda España.",
+    "Maquinaria de segunda mano para panadería, pastelería, heladería y hostelería, revisada en taller y con garantía por escrito. Servicio técnico en Elda (Alicante). Envíos a toda España.",
   applicationName: "El Obrador de Emapan",
   openGraph: { type: "website", locale: "es_ES", siteName: "El Obrador de Emapan", images: [{ url: "/images/emapan-logo.png", width: 738, height: 271, alt: "Emapan" }] },
   robots: isIndexable() ? { index: true, follow: true } : { index: false, follow: false },

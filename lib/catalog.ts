@@ -31,22 +31,15 @@ export const settings:Settings={
  liveInquiries:true,       // true cuando quieras recibir solicitudes reales
 };
 
-/** Qué incluye la garantía por escrito. Se muestra en portada y en cada ficha. */
-export const warrantyIncludes=[
- 'Garantía por escrito con cada máquina, con su número de serie.',
- '[PENDIENTE: duración de la garantía de las máquinas de segunda mano]',
- '[PENDIENTE: qué cubre (piezas, mano de obra, desplazamiento) y qué queda excluido]',
- 'Atención de la garantía por nuestro propio servicio técnico.',
-];
+/** Garantía de las máquinas de segunda mano. Se muestra en portada y en cada ficha. */
+export const warranty='[PENDIENTE: duración y cobertura de la garantía, p. ej. 6 meses en piezas y mano de obra]';
 
 /** Foto real del taller o del equipo para la portada. Guárdala en public/images/ y pon aquí su ruta, p. ej. '/images/taller-emapan.jpg'. */
 export const workshopPhoto={src:'',alt:'Equipo técnico de Emapan revisando una máquina en el taller de Elda (Alicante)'};
 
-// Marcas de las que Emapan es servicio técnico oficial. Solo estas cinco.
-export const officialBrands=['FM','Mondial Forni','Carpigiani','Labus','Roboqbo'];
-// Marcas con las que trabaja sin ser servicio oficial.
-export const otherBrands=['WIESHEU','IFI'];
-export const partnerBrands=[...officialBrands,...otherBrands];
+// Marcas de las que Emapan hace servicio técnico. Se muestran en este orden.
+export const serviceBrands=['LABUS','IFI','WIESHEU','Carpigiani','Roboqbo','Mondial Forni','FM'];
+export const partnerBrands=serviceBrands;
 export const categories=['Todas','Panadería','Heladería','Pastelería','Hostelería'];
 export const money=(n:number|null)=>n===null?'A presupuestar':new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(n);
 export const phoneDisplay=(p:string)=>p.replace(/^\+34/,'').replace(/(\d{3})(\d{2})(\d{2})(\d{2})/,'$1 $2 $3 $4');
@@ -65,7 +58,7 @@ qbo15.dimensions='1240 × 997 × 1381 mm (ancho × fondo × alto)';
 qbo15.functioning='Procesado en cuba de acero AISI 316L, temperatura máxima de 120 °C, vacío máximo de −980 mbar y velocidad variable de 30 a 3000 rpm. Configuración y accesorios a confirmar.';
 qbo15.images.push({url:'/images/roboqbo-interior.jpg',label:'Interior de la cuba de un Roboqbo de la gama Qbo en funcionamiento · imagen del fabricante',kind:'interior'});
 demos.push(
- reference('demo-labus-abv','Labus','ABV','Amasadora de brazos verticales','Panadería','labus-abv.jpg','Amasadora de brazos verticales para la preparación de masas. Modelo de referencia de la gama ABV de Labus; capacidad y versión a confirmar.','https://labus.es/producto/amasadora-mixer/'),
+ reference('demo-labus-abv','LABUS','ABV','Amasadora de brazos verticales','Panadería','labus-abv.jpg','Amasadora de brazos verticales para la preparación de masas. Modelo de referencia de la gama ABV de LABUS; capacidad y versión a confirmar.','https://labus.es/producto/amasadora-mixer/'),
  qbo15,
  {...reference('demo-fm-stb606','FM','STB 606 V7','Horno mixto de panadería','Panadería','fm-stb606.png','Horno eléctrico mixto para panadería con control táctil. La configuración de accesorios, instalación y servicio se concreta en la propuesta.','https://fmindustrial.es/producto/stb-606-v7/'),capacity:'6 bandejas 600 × 400 mm / GN 1/1 · ficha del fabricante',power:'10,65 kW · ficha del fabricante',voltage:'400 V · trifásica · 50/60 Hz',dimensions:'880 × 955 × 835 mm (ancho × fondo × alto) · ficha del fabricante'},
  reference('demo-wiesheu-dibas','WIESHEU','Dibas blue²','Horno de convección para punto de venta','Panadería','wiesheu-dibas.png','Horno de convección con puerta que se recoge lateralmente. La imagen ilustra una combinación de hornos y carro; los elementos incluidos se definirán en la propuesta.','https://www.wiesheu.de/produkte/ladenbackoefen/dibas-blue')

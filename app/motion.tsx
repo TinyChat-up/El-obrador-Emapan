@@ -1,31 +1,26 @@
 'use client';
 import { useEffect } from 'react';
 
-// Capa de movimiento común a todas las páginas: aparición al hacer scroll,
-// cabecera con sombra y barra de progreso. Sin JavaScript todo se ve igual,
+// Capa de movimiento común a todas las páginas: aparición suave al hacer
+// scroll y cabecera con sombra. Sin JavaScript todo se ve igual,
 // solo que quieto; con «reducir movimiento» no se anima nada.
 const REVEAL = [
-  '.section-title', '.brands-panel', '.stock-soon', '.machine-card', '.ref-card', '.sell-band',
-  '.archive-workshop figure', '.archive-workshop > div', '.proposal-section > div:first-child',
-  '.proposal-steps > div', '.sell-hero > div', '.sell-model-grid article', '.commercial-note',
-  '.offer-intro', '.offer-form', '.technical', '.compare-title', '.sat-compare-controls',
-  '.legal-page h2', '.site-footer > div', '.trust-grid article', '.warranty-panel', '.revision-intro',
-  '.revision-list li', '.brand-group', '.service-cards article', '.official-card', '.contract-band', '.coverage > *',
+  '.brands-line li', '.doors li', '.section-head', '.tile', '.stock-note', '.review-inner > *',
+  '.contact-block .wrap > *', '.used-block', '.sell-hero > div', '.sell-model-grid article',
+  '.commercial-note', '.offer-intro', '.offer-form', '.compare-title', '.sat-compare-controls',
+  '.legal-page h2',
 ].join(',');
 
 export default function Motion() {
   useEffect(() => {
     const root = document.documentElement;
-    const header = document.querySelector('.site-header');
-    const bar = document.querySelector<HTMLElement>('.scroll-progress');
+    const header = document.querySelector('.masthead');
     const pending = new Set<HTMLElement>();
     const show = (el: HTMLElement) => { el.classList.add('is-in'); pending.delete(el); };
     let frame = 0;
     const onScroll = () => {
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
-        const max = root.scrollHeight - root.clientHeight;
-        bar?.style.setProperty('--progress', String(max > 0 ? root.scrollTop / max : 0));
         header?.classList.toggle('is-scrolled', root.scrollTop > 8);
         // Red de seguridad: un salto de ancla o un scroll muy rápido no deja nada oculto.
         for (const el of pending) if (el.getBoundingClientRect().top < window.innerHeight) show(el);
@@ -69,7 +64,7 @@ export default function Motion() {
     };
   }, []);
 
-  return <div className="scroll-progress" aria-hidden="true" />;
+  return null;
 }
 
 // Sello de confirmación: el círculo y la marca se dibujan y saltan unas chispas.

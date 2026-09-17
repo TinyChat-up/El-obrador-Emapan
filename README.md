@@ -1,7 +1,7 @@
 # El Obrador de Emapan
 
 Web de Emapan S.L.: maquinaria de segunda mano revisada en taller, modelos
-nuevos bajo propuesta y servicio técnico oficial. Next.js en Vercel.
+nuevos bajo propuesta y servicio técnico. Next.js en Vercel.
 **Todo el contenido se gestiona desde el código**: no hay panel ni base de datos.
 
 ## Dónde se cambia cada cosa
@@ -11,11 +11,11 @@ nuevos bajo propuesta y servicio técnico oficial. Next.js en Vercel.
 | Publicar, editar, reservar o marcar como vendida una máquina usada | [`lib/used-machines.ts`](lib/used-machines.ts) |
 | Fotos y vídeos de las máquinas usadas | `public/maquinas/<nombre-de-la-maquina>/` |
 | Datos de la empresa (CIF, dirección, teléfono, horario, cobertura…) | [`lib/catalog.ts`](lib/catalog.ts), constante `settings` |
-| Qué incluye la garantía | [`lib/catalog.ts`](lib/catalog.ts), `warrantyIncludes` |
+| Garantía (texto de portada) | [`lib/catalog.ts`](lib/catalog.ts), `warranty` |
 | Foto del taller de la portada | [`lib/catalog.ts`](lib/catalog.ts), `workshopPhoto` |
-| Marcas oficiales y otras marcas | [`lib/catalog.ts`](lib/catalog.ts), `officialBrands` y `otherBrands` |
+| Marcas de «Servicio técnico de» | [`lib/catalog.ts`](lib/catalog.ts), `serviceBrands` |
 | Modelos nuevos bajo propuesta | [`lib/catalog.ts`](lib/catalog.ts), lista `demos` |
-| Lista «Qué revisamos antes de vender» | [`components/site/trust.tsx`](components/site/trust.tsx) |
+| Lista «Antes de venderla, la revisamos a fondo» | [`components/site/review.tsx`](components/site/review.tsx) |
 
 Editas, `git push`, y Vercel publica solo. Busca `[PENDIENTE` en el proyecto
 para ver los datos que faltan: se muestran tal cual en la web hasta que los
@@ -55,15 +55,19 @@ unidades están en camino» y los modelos nuevos.
   `labus-abv.jpg`, `fm-stb606.png`, `wiesheu-dibas.png` e `ifi-esedra.jpg`.
   Proceden de las webs de los fabricantes o de sus distribuidores (detalle en
   [SOURCES.md](SOURCES.md)). No se encontró licencia de reutilización: pide
-  permiso por escrito a cada marca (siendo servicio oficial suele ser sencillo)
-  o sustitúyelas por fotos propias. Las de Carpigiani vienen de un distribuidor
+  permiso por escrito a cada marca o sustitúyelas por fotos propias. Las de Carpigiani vienen de un distribuidor
   alemán y son las primeras que conviene cambiar.
-- **Históricas, de dominio público:** `bakery-interior-1900.jpg`
-  ([VINTAGE-SOURCES.md](VINTAGE-SOURCES.md)).
 - **Propias:** `emapan-logo.png` y todo lo que haya en `public/maquinas/`.
 
 Todas las imágenes se sirven con `next/image`: AVIF o WebP según el navegador,
 tamaños adaptados a cada pantalla y carga diferida (salvo la foto principal).
+
+## Estructura de la portada
+
+Una sola historia, de arriba abajo: quiénes somos → marcas de las que hacemos
+servicio técnico → ¿qué necesitas? (comprar, reparar, vender) → maquinaria de
+segunda mano → maquinaria nueva → cómo revisamos → contacto. Los estilos están
+en [`app/site.css`](app/site.css).
 
 ## Dominio propio
 

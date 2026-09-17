@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { ArrowUpRight, ChevronRight, MapPin, Phone, Scale, ShieldCheck, Truck, Wrench } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { phoneDisplay } from '@/lib/catalog';
 import { getSettings } from '@/lib/server';
 import { absoluteUrl, whatsappLink } from '@/lib/site';
@@ -12,7 +12,6 @@ import { WhatsAppIcon } from '@/components/site/icons';
 import { JsonLd } from '@/components/site/json-ld';
 import { InquiryButton } from '@/components/site/inquiry-dialog';
 import { MachineGallery, MachineVideo } from '@/components/site/machine-gallery';
-import { RevisionChecklist } from '@/components/site/trust';
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -70,123 +69,105 @@ function productSchema(m: UsedMachine) {
   };
 }
 
+function Facts({ rows }: { rows: [string, React.ReactNode][] }) {
+  return (
+    <dl className="facts">
+      {rows.map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}
+    </dl>
+  );
+}
+
 export default async function MachinePage({ params }: Props) {
   const m = findUsedMachine((await params).slug);
   if (!m) notFound();
   const settings = getSettings();
   const name = title(m);
   const sold = m.disponibilidad === 'vendida';
-  const waMachine = whatsappLink(settings, `Hola, vengo de la web y me interesa la ${name} (ref. ${m.slug}).`);
-  const facts: [string, string][] = [
-    ['Año', m.año ? String(m.año) : 'Sin confirmar'],
+
+  const condition: [string, React.ReactNode][] = [
     ['Estado', m.estado],
-    ...(m.horasUso ? [['Horas de uso', m.horasUso.toLocaleString('es-ES')] as [string, string]] : []),
+    ...(m.horasUso ? [['Horas de uso', `${m.horasUso.toLocaleString('es-ES')} h`] as [string, string]] : []),
+    ['Revisión en taller', <>{m.revision.fecha && <>{monthLabel(m.revision.fecha)}. </>}{m.revision.resumen}</>],
+    ['Piezas sustituidas', m.piezasSustituidas.length ? m.piezasSustituidas.join(', ') : 'Ninguna necesaria'],
+    ['Garantía', `${m.garantia}, por escrito`],
     ['Ubicación', m.ubicacion],
   ];
-  const specs: [string, string | undefined][] = [
+  const specs = ([
     ['Tipo', m.tipo],
-    ['Sector', m.categoria],
     ['Capacidad', m.ficha?.capacidad],
     ['Potencia', m.ficha?.potencia],
     ['Alimentación eléctrica', m.ficha?.alimentacion],
     ['Dimensiones', m.ficha?.dimensiones],
-  ];
+  ] as [string, string | undefined][]).filter((r): r is [string, string] => !!r[1]);
 
   return (
     <>
-      <Header settings={settings} active="catalog" />
-      <main id="contenido" className="wrap detail-page used-detail">
-        <nav className="breadcrumb" aria-label="Estás aquí">
-          <Link href="/#catalogo">Segunda mano</Link>
-          <ChevronRight size={13} aria-hidden="true" />
-          <span>{m.categoria}</span>
-          <ChevronRight size={13} aria-hidden="true" />
-          <span aria-current="page">{m.marca} {m.modelo}</span>
-        </nav>
+      <Header settings={settings} active="machines" />
+      <main id="contenido" className="used-page wrap">
+        <Link className="back" href="/#maquinaria"><ArrowLeft size={15} aria-hidden="true" /> Maquinaria</Link>
 
-        {sold && (
-          <div className="sold-banner" role="status">
-            <strong>Esta máquina ya se ha vendido.</strong>
-            <span>Conservamos su ficha como referencia. Si buscas algo parecido, te avisamos cuando entre otra.</span>
-            {settings.whatsapp && (
-              <a className="btn btn-wa" href={whatsappLink(settings, `Hola, vengo de la web. Vi la ${name} vendida y busco una máquina parecida.`)} target="_blank" rel="noopener">
-                <WhatsAppIcon /> Buscadme una parecida
-              </a>
-            )}
-          </div>
-        )}
-
-        <div className="detail-grid">
-          <section className="gallery" aria-label="Fotografías y vídeo">
+        <div className="used-grid">
+          <section aria-label="Fotografías">
             <MachineGallery name={name} photos={m.fotos} />
-            <p className="photo-note">Fotografías reales de esta unidad.</p>
           </section>
 
-          <section className="detail-summary" aria-label="Resumen">
-            <div className="flex-line">
-              <span className="badge badge-used">Segunda mano · Revisada</span>
-              <span className={`availability-pill availability-${m.disponibilidad}`}>{availabilityLabel[m.disponibilidad]}</span>
-            </div>
-            <div className="eyebrow">{m.marca.toUpperCase()} · {m.tipo.toUpperCase()}</div>
+          <section className="used-summary" aria-label="Resumen">
+            <p className="tile-meta">
+              Segunda mano · Revisada en taller
+              <span className={`availability availability-${m.disponibilidad}`}>{availabilityLabel[m.disponibilidad]}</span>
+            </p>
             <h1>{m.marca} {m.modelo}</h1>
-            {m.descripcion && <p>{m.descripcion}</p>}
-            <dl className="quick-facts">
-              {facts.map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}
-            </dl>
-            <div className="detail-price">
-              <span>{m.precio === 'consultar' ? 'Precio' : 'Precio de la máquina · sin IVA'}</span>
-              <strong>{usedPriceLabel(m)}</strong>
-              <small>Te presupuestamos el envío a cualquier punto de España y la instalación.</small>
-            </div>
-            {!sold && (
-              <div className="detail-actions">
-                {settings.whatsapp && <a className="btn btn-wa-solid full" href={waMachine} target="_blank" rel="noopener"><WhatsAppIcon /> Preguntar por WhatsApp</a>}
-                {settings.phone && <a className="btn btn-outline full" href={`tel:${settings.phone}`}><Phone size={17} aria-hidden="true" /> Llamar al {phoneDisplay(settings.phone)}</a>}
-                <InquiryButton machines={[toMachine(m)]} settings={settings} className="text-link">Prefiero que me escribáis <ArrowUpRight size={16} aria-hidden="true" /></InquiryButton>
-                <a className="text-link" href={`/comparar?ids=${encodeURIComponent(m.slug)}`}><Scale size={16} aria-hidden="true" /> Comparar con una nueva</a>
+            <p className="used-sub">{m.tipo}{m.año ? ` · ${m.año}` : ''}</p>
+            {m.descripcion && <p className="used-desc">{m.descripcion}</p>}
+            <p className="used-price">
+              {usedPriceLabel(m)}
+              {m.precio !== 'consultar' && <small> + IVA</small>}
+            </p>
+
+            {sold ? (
+              <div className="sold-note" role="status">
+                <p><strong>Esta máquina ya está vendida.</strong> Si buscas algo parecido, te avisamos cuando entre otra.</p>
+                {settings.whatsapp && <a className="btn btn-wa-solid" href={whatsappLink(settings, `Hola, vengo de la web. Busco una máquina parecida a la ${name}.`)} target="_blank" rel="noopener"><WhatsAppIcon /> Buscadme una parecida</a>}
               </div>
+            ) : (
+              <>
+                <div className="actions actions-stack">
+                  {settings.whatsapp && <a className="btn btn-wa-solid" href={whatsappLink(settings, `Hola, vengo de la web y me interesa la ${name} (ref. ${m.slug}).`)} target="_blank" rel="noopener"><WhatsAppIcon /> Preguntar por WhatsApp</a>}
+                  {settings.phone && <a className="btn btn-outline" href={`tel:${settings.phone}`}>Llamar al {phoneDisplay(settings.phone)}</a>}
+                </div>
+                <p className="used-links">
+                  <InquiryButton machines={[toMachine(m)]} settings={settings} className="link-button">Prefiero dejar mis datos</InquiryButton>
+                  <span aria-hidden="true"> · </span>
+                  <Link href={`/comparar?ids=${encodeURIComponent(m.slug)}`}>Comparar con una nueva</Link>
+                </p>
+              </>
             )}
-            <div className="detail-assurance">
-              <span><Wrench size={18} aria-hidden="true" /> Revisada en nuestro taller</span>
-              <span><ShieldCheck size={18} aria-hidden="true" /> Garantía por escrito</span>
-              <span><Truck size={18} aria-hidden="true" /> Envíos a toda España</span>
-            </div>
+            <p className="used-shipping">Envío a toda España. Te presupuestamos transporte e instalación.</p>
           </section>
         </div>
 
         {m.video && (
-          <section className="machine-video-section" aria-label="Vídeo de la máquina">
+          <section className="used-block" aria-label="Vídeo">
             <MachineVideo name={name} video={m.video} />
           </section>
         )}
 
-        <section className="technical" aria-labelledby="estado-titulo">
-          <div className="eyebrow">REVISADA EN TALLER</div>
-          <h2 id="estado-titulo">Estado, revisión y garantía.</h2>
-          <div className="spec-grid">
-            <div><span>Revisión en taller</span><p>{m.revision.fecha ? <><strong>{monthLabel(m.revision.fecha)}.</strong> </> : null}{m.revision.resumen}</p></div>
-            <div>
-              <span>Piezas sustituidas</span>
-              {m.piezasSustituidas.length ? <ul className="parts-list">{m.piezasSustituidas.map(p => <li key={p}>{p}</li>)}</ul> : <p>No ha sido necesario sustituir piezas.</p>}
-            </div>
-            <div><span>Estado general</span><p>{m.estado}</p></div>
-            <div><span>Horas de uso</span><p>{m.horasUso ? m.horasUso.toLocaleString('es-ES') + ' horas' : 'No registradas'}</p></div>
-            <div><span>Garantía</span><p>{m.garantia}. Por escrito, atendida por nuestro servicio técnico.</p></div>
-            <div><span>Disponibilidad y ubicación</span><p><MapPin size={14} aria-hidden="true" /> {availabilityLabel[m.disponibilidad]} · {m.ubicacion}</p></div>
-          </div>
-
-          <h2 className="technical-second">Ficha técnica.</h2>
-          <div className="spec-grid">
-            {specs.map(([k, v]) => <div key={k}><span>{k}</span><p>{v || 'Consúltanos'}</p></div>)}
-          </div>
-          {settings.whatsapp && (
-            <a className="btn btn-outline tech-request" href={whatsappLink(settings, `Hola, vengo de la web y me gustaría recibir la ficha técnica completa de la ${name} (ref. ${m.slug}).`)} target="_blank" rel="noopener">
-              <WhatsAppIcon /> Pedir ficha técnica completa
-            </a>
-          )}
-        </section>
+        <div className="used-details">
+          <section className="used-block" aria-labelledby="estado-titulo">
+            <h2 id="estado-titulo">Estado y revisión</h2>
+            <Facts rows={condition} />
+          </section>
+          <section className="used-block" aria-labelledby="ficha-titulo">
+            <h2 id="ficha-titulo">Ficha técnica</h2>
+            <Facts rows={specs} />
+            {settings.whatsapp && (
+              <a className="text-link" href={whatsappLink(settings, `Hola, vengo de la web. ¿Me enviáis la ficha técnica completa de la ${name} (ref. ${m.slug})?`)} target="_blank" rel="noopener">
+                Pedir la ficha técnica completa
+              </a>
+            )}
+          </section>
+        </div>
       </main>
-      <RevisionChecklist compact />
       <Footer settings={settings} />
       <JsonLd data={productSchema(m)} />
     </>
