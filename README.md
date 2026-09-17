@@ -57,16 +57,31 @@ unidades están en camino» y los modelos nuevos.
   [SOURCES.md](SOURCES.md)). No se encontró licencia de reutilización: pide
   permiso por escrito a cada marca o sustitúyelas por fotos propias. Las de Carpigiani vienen de un distribuidor
   alemán y son las primeras que conviene cambiar.
+- **Históricas, de dominio público:** `bread-poster-1918.jpg` y
+  `bakery-interior-1900.jpg` ([VINTAGE-SOURCES.md](VINTAGE-SOURCES.md)).
 - **Propias:** `emapan-logo.png` y todo lo que haya en `public/maquinas/`.
 
 Todas las imágenes se sirven con `next/image`: AVIF o WebP según el navegador,
 tamaños adaptados a cada pantalla y carga diferida (salvo la foto principal).
 
+## Comparador
+
+`/comparar` pone hasta tres máquinas lado a lado (dos en el móvil), al estilo
+de la comparativa de móviles de Apple: cada columna tiene su selector y debajo
+se alinean precio, estado, revisión, garantía y ficha técnica.
+
+- Las filas y sus textos están en [`lib/compare.ts`](lib/compare.ts).
+- Al abrirlo desde una máquina usada, la segunda columna elige el modelo nuevo
+  indicado en `compararCon`; si no hay, uno de la misma marca y sector.
+- La dirección se puede compartir: `/comparar?ids=maquina-1,demo-domino`.
+
 ## Estructura de la portada
 
-Una sola historia, de arriba abajo: quiénes somos → marcas de las que hacemos
-servicio técnico → ¿qué necesitas? (comprar, reparar, vender) → maquinaria de
-segunda mano → maquinaria nueva → cómo revisamos → contacto. Los estilos están
+Una sola historia, de arriba abajo: quiénes somos (con el cartel de 1918) →
+marcas de las que hacemos servicio técnico → ¿qué necesitas? (comprar, reparar,
+vender) → segunda mano frente a nueva (acceso al comparador) → maquinaria de
+segunda mano → maquinaria nueva → el oficio (foto
+histórica) → cómo revisamos (foto del taller) → contacto. Los estilos están
 en [`app/site.css`](app/site.css).
 
 ## Dominio propio

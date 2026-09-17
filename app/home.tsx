@@ -2,8 +2,8 @@
 import { useMemo, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, Camera } from 'lucide-react';
-import { categories, money, phoneDisplay, workshopPhoto, type Machine, type Settings } from '@/lib/catalog';
+import { ArrowRight } from 'lucide-react';
+import { categories, money, phoneDisplay, type Machine, type Settings } from '@/lib/catalog';
 import { whatsappLink } from '@/lib/site';
 import { Header } from '@/components/site/header';
 import { Footer } from '@/components/site/footer';
@@ -56,15 +56,12 @@ export default function Home({ machines, referenceMachines, settings }: { machin
               {settings.whatsapp && <a className="btn btn-wa-solid" href={wa()} target="_blank" rel="noopener"><WhatsAppIcon /> Escríbenos por WhatsApp</a>}
             </div>
           </div>
-          <figure className="intro-photo">
-            {workshopPhoto.src ? (
-              <Image src={workshopPhoto.src} alt={workshopPhoto.alt} fill sizes="(max-width: 760px) 100vw, 40vw" priority />
-            ) : (
-              <div className="photo-placeholder" role="img" aria-label="Espacio reservado para una foto real del taller">
-                <Camera size={28} aria-hidden="true" />
-                <span>[PENDIENTE: foto real del taller o del equipo]</span>
-              </div>
-            )}
+          <figure className="poster">
+            <div className="poster-label"><span>Cartel de archivo</span><span>c. 1918</span></div>
+            <div className="poster-frame">
+              <Image src="/images/bread-poster-1918.jpg" alt="Cartel histórico con una hogaza de pan: «Save a loaf a week», de la U.S. Food Administration, hacia 1918" width={2029} height={3000} sizes="(max-width: 860px) 260px, 340px" priority />
+            </div>
+            <figcaption>«Save a loaf a week». U.S. Food Administration, c. 1918. National Archives, dominio público.</figcaption>
           </figure>
         </section>
 
@@ -77,7 +74,7 @@ export default function Home({ machines, referenceMachines, settings }: { machin
               <a href="#maquinaria">
                 <span className="door-number" aria-hidden="true">01</span>
                 <h3>Comprar una máquina</h3>
-                <p>De segunda mano, revisada en nuestro taller. O nueva, bajo propuesta.</p>
+                <p>De segunda mano, revisada en nuestro taller, o nueva. Compáralas antes de decidir.</p>
                 <span className="door-go">Ver maquinaria <ArrowRight size={15} aria-hidden="true" /></span>
               </a>
             </li>
@@ -100,6 +97,42 @@ export default function Home({ machines, referenceMachines, settings }: { machin
           </ul>
         </section>
 
+        <section className="duel" aria-labelledby="duel-titulo">
+          <div className="wrap">
+            <div className="duel-head">
+              <p className="kicker">Comparador</p>
+              <h2 id="duel-titulo">Segunda mano o nueva. Compáralas.</h2>
+              <p>Pon una máquina revisada junto a un modelo nuevo y decide con todos los datos delante.</p>
+            </div>
+            <div className="duel-grid">
+              <article>
+                <span className="pill pill-used">Segunda mano · Revisada</span>
+                <h3>Revisada en nuestro taller</h3>
+                <dl>
+                  <div><dt>Precio</dt><dd>Cerrado por máquina</dd></div>
+                  <div><dt>Entrega</dt><dd>Desde nuestro taller</dd></div>
+                  <div><dt>Estado</dt><dd>Revisada y probada</dd></div>
+                  <div><dt>Garantía</dt><dd>Por escrito, de Emapan</dd></div>
+                </dl>
+              </article>
+              <span className="duel-vs" aria-hidden="true">vs</span>
+              <article>
+                <span className="pill pill-new">Nueva · Bajo propuesta</span>
+                <h3>Nueva de fábrica</h3>
+                <dl>
+                  <div><dt>Precio</dt><dd>Bajo propuesta</dd></div>
+                  <div><dt>Entrega</dt><dd>Plazo del fabricante</dd></div>
+                  <div><dt>Estado</dt><dd>A estrenar</dd></div>
+                  <div><dt>Garantía</dt><dd>Del fabricante</dd></div>
+                </dl>
+              </article>
+            </div>
+            <div className="actions duel-actions">
+              <Link className="btn btn-dark" href="/comparar">Abrir el comparador <ArrowRight size={17} aria-hidden="true" /></Link>
+            </div>
+          </div>
+        </section>
+
         <section className="stock wrap" id="maquinaria" aria-labelledby="usada-titulo">
           <div className="section-head">
             <h2 id="usada-titulo">Maquinaria de segunda mano</h2>
@@ -117,6 +150,7 @@ export default function Home({ machines, referenceMachines, settings }: { machin
                     <h3><Link className="tile-link" href={`/maquina/${m.id}`}>{m.model}</Link></h3>
                     <p className="tile-type">{m.type}</p>
                     <p className="tile-price">{m.price === null ? 'Consultar precio' : `${money(m.price)} + IVA`}</p>
+                    <Link className="tile-compare" href={`/comparar?ids=${encodeURIComponent(m.id)}`}>Comparar con nueva</Link>
                   </li>
                 ))}
               </ul>
@@ -146,6 +180,17 @@ export default function Home({ machines, referenceMachines, settings }: { machin
               </li>
             ))}
           </ul>
+        </section>
+
+        <section className="craft wrap" aria-labelledby="oficio-titulo">
+          <figure>
+            <Image src="/images/bakery-interior-1900.jpg" alt="Fotografía histórica en blanco y negro de un panadero junto a sus panes y el horno de un obrador, a comienzos del siglo XX" width={2000} height={1537} sizes="(max-width: 860px) 92vw, 620px" />
+            <figcaption>«Interior of a bakery», principios del siglo XX. Archives of Ontario, dominio público.</figcaption>
+          </figure>
+          <div>
+            <h2 id="oficio-titulo">Cambian las máquinas.<br />Permanece el oficio.</h2>
+            <p>Cada obrador tiene su ritmo. Por eso, antes de recomendarte una máquina, queremos saber qué produces, cuánto espacio tienes y cómo trabajas.</p>
+          </div>
         </section>
 
         <ReviewSection />

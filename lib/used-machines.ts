@@ -145,6 +145,15 @@ export function findUsedMachine(slug: string) {
   return all.find(m => m.slug === slug);
 }
 
+/** '2026-09' → 'septiembre de 2026'. */
+export function monthLabel(value?: string) {
+  if (!value) return '';
+  const [y, mo] = value.split('-').map(Number);
+  if (!y) return value;
+  if (!mo) return String(y);
+  return new Intl.DateTimeFormat('es-ES', { month: 'long', year: 'numeric' }).format(new Date(y, mo - 1, 1));
+}
+
 export const usedPriceLabel = (m: UsedMachine) =>
   m.precio === 'consultar'
     ? 'Consultar precio'
@@ -180,5 +189,10 @@ export function toMachine(m: UsedMachine): Machine {
     availability: availabilityLabel[m.disponibilidad],
     isDemo: false,
     published: true,
+    hours: m.horasUso ?? null,
+    parts: m.piezasSustituidas,
+    reviewDate: m.revision.fecha,
+    state: m.estado,
+    location: m.ubicacion,
   };
 }

@@ -1,9 +1,79 @@
+import type { Metadata } from 'next';
+import { ArrowRight } from 'lucide-react';
 import { Header } from '@/components/site/header';
 import { Footer } from '@/components/site/footer';
+import { WhatsAppIcon } from '@/components/site/icons';
 import { getSettings } from '@/lib/server';
+import { whatsappLink } from '@/lib/site';
 import OfferForm from './offer-form';
 
-export const dynamic='force-dynamic';
-export const metadata={title:'Vende tu maquinaria de panadería o heladería',description:'Valoración de maquinaria usada de panadería, heladería, pastelería y hostelería por nuestro servicio técnico. Venta gestionada, depósito en Emapan o compra directa.',alternates:{canonical:'/vender'}};
+export const dynamic = 'force-dynamic';
+export const metadata: Metadata = {
+  title: 'Vende tu maquinaria de panadería o heladería',
+  description: 'Valoración de maquinaria usada de panadería, heladería, pastelería y hostelería por nuestro servicio técnico. Venta gestionada, depósito en Emapan o compra directa.',
+  alternates: { canonical: '/vender' },
+};
 
-export default function SellPage(){const settings=getSettings();return <><Header settings={settings} active="sell"/><main id="contenido" className="sell-page"><section className="sell-hero wrap"><div><span className="eyebrow">TU MÁQUINA PUEDE SEGUIR PRODUCIENDO</span><h1>Véndela con criterio técnico.</h1><p>Envíanos fotografías y datos reales. La valoramos, acordamos contigo la modalidad y solo la publicamos después de revisar su estado.</p></div><div className="sell-hero-note"><strong>Sin valoración automática a ciegas.</strong><p>Marca, modelo, año, funcionamiento, mantenimiento y demanda cambian mucho el precio. Primero comprobamos; después proponemos.</p></div></section><section className="sell-models wrap"><div className="section-title"><div><span className="eyebrow">TRES FORMAS DE VENDER</span><h2>Elige cuánto quieres delegar.</h2></div></div><div className="sell-model-grid"><article><span>01</span><h3>Venta gestionada</h3><strong>12 % del precio de venta</strong><p>La máquina permanece en tus instalaciones. Preparamos el anuncio, filtramos interesados y gestionamos la negociación.</p><small>Mínimo orientativo: 600 € + IVA. Transporte, revisión o reparación se presupuestan aparte.</small></article><article className="featured"><span>02 · RECOMENDADA</span><h3>Depósito en Emapan</h3><strong>18 % del precio de venta</strong><p>Podemos almacenarla, documentarla con detalle, enseñarla y coordinar la entrega al comprador.</p><small>Mínimo orientativo: 900 € + IVA. Recogida, reparación y almacenaje extraordinario se pactan antes.</small></article><article><span>03</span><h3>Compra directa</h3><strong>Oferta después de inspección</strong><p>Emapan compra la unidad y asume inmovilizado, reparación, almacenamiento y riesgo de venta.</p><small>Es la vía más rápida, pero la oferta será inferior al valor de venta al público.</small></article></div><p className="commercial-note">Tarifas iniciales propuestas para Emapan, sujetas a valoración y acuerdo escrito. No son una tasación ni una oferta contractual.</p></section><section className="offer-section wrap" id="valoracion"><div className="offer-intro"><span className="eyebrow">SOLICITA UNA VALORACIÓN</span><h2>Enséñanos la máquina tal como está.</h2><p>Necesitamos fotografías generales, placa de características y cualquier desgaste o incidencia. Cuanta más claridad, mejor podremos valorar.</p><div className="photo-checklist"><span>Vista completa</span><span>Placa y modelo</span><span>Interior y componentes</span><span>Defectos visibles</span></div></div><OfferForm/></section></main><Footer settings={settings}/></>}
+const options = [
+  { title: 'Venta gestionada', rate: '12 % del precio de venta', text: 'La máquina se queda en tus instalaciones. Preparamos el anuncio, filtramos a los interesados y gestionamos la negociación.', note: 'Mínimo orientativo: 600 € + IVA. Transporte, revisión o reparación se presupuestan aparte.' },
+  { title: 'Depósito en Emapan', rate: '18 % del precio de venta', text: 'La guardamos en nuestras instalaciones, la documentamos con detalle, la enseñamos y coordinamos la entrega al comprador.', note: 'Mínimo orientativo: 900 € + IVA. Recogida, reparación y almacenaje extraordinario se pactan antes.', recommended: true },
+  { title: 'Compra directa', rate: 'Oferta después de inspección', text: 'Emapan compra la máquina y asume la reparación, el almacenaje y el riesgo de venta.', note: 'Es la vía más rápida, pero la oferta será inferior al precio de venta al público.' },
+];
+
+export default function SellPage() {
+  const settings = getSettings();
+  return (
+    <>
+      <Header settings={settings} active="sell" />
+      <main id="contenido">
+        <section className="intro intro-single wrap">
+          <div className="intro-copy">
+            <p className="kicker">Vende tu máquina</p>
+            <h1>Véndela con criterio técnico.</h1>
+            <p className="lead">Envíanos fotos y datos reales. La valoramos, acordamos contigo cómo venderla y solo la publicamos después de revisar su estado.</p>
+            <div className="actions">
+              <a className="btn btn-dark" href="#valoracion">Solicitar valoración <ArrowRight size={17} aria-hidden="true" /></a>
+              {settings.whatsapp && <a className="btn btn-wa-solid" href={whatsappLink(settings, 'Hola, vengo de la web y quiero vender una máquina: ')} target="_blank" rel="noopener"><WhatsAppIcon /> Enviar fotos por WhatsApp</a>}
+            </div>
+          </div>
+        </section>
+
+        <section className="doors wrap" aria-labelledby="formas-titulo">
+          <h2 id="formas-titulo">Tres formas de vender</h2>
+          <ul>
+            {options.map((o, i) => (
+              <li key={o.title}>
+                <div>
+                  <span className="door-number">{String(i + 1).padStart(2, '0')}{o.recommended && <span className="door-tag">Recomendada</span>}</span>
+                  <h3>{o.title}</h3>
+                  <p className="door-rate">{o.rate}</p>
+                  <p>{o.text}</p>
+                  <p className="door-small">{o.note}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+          <p className="doors-note">Tarifas orientativas, sujetas a valoración y acuerdo por escrito. No son una tasación ni una oferta contractual.</p>
+        </section>
+
+        <section className="sell-form" id="valoracion" aria-labelledby="valoracion-titulo">
+          <div className="sell-form-inner wrap">
+            <div className="sell-form-intro">
+              <h2 id="valoracion-titulo">Enséñanos la máquina tal como está.</h2>
+              <p>Marca, modelo, año, funcionamiento y mantenimiento cambian mucho el precio. Primero comprobamos; después proponemos.</p>
+              <p className="sell-form-sub">Fotos que nos ayudan:</p>
+              <ul className="check-list">
+                <li>Vista completa</li>
+                <li>Placa de características</li>
+                <li>Interior y componentes</li>
+                <li>Desgaste o averías visibles</li>
+              </ul>
+            </div>
+            <OfferForm />
+          </div>
+        </section>
+      </main>
+      <Footer settings={settings} />
+    </>
+  );
+}

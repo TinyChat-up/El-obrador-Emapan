@@ -1,11 +1,11 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Scale } from 'lucide-react';
 import { phoneDisplay } from '@/lib/catalog';
 import { getSettings } from '@/lib/server';
 import { absoluteUrl, whatsappLink } from '@/lib/site';
-import { allUsedMachines, availabilityLabel, findUsedMachine, toMachine, usedPriceLabel, type UsedMachine } from '@/lib/used-machines';
+import { allUsedMachines, availabilityLabel, findUsedMachine, monthLabel, toMachine, usedPriceLabel, type UsedMachine } from '@/lib/used-machines';
 import { Header } from '@/components/site/header';
 import { Footer } from '@/components/site/footer';
 import { WhatsAppIcon } from '@/components/site/icons';
@@ -31,14 +31,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     alternates: { canonical: `/maquina/${m.slug}` },
     openGraph: { type: 'website', title: `${title(m)} de segunda mano`, images: m.fotos.slice(0, 1).map(f => ({ url: f.src, alt: f.alt })) },
   };
-}
-
-function monthLabel(value?: string) {
-  if (!value) return '';
-  const [y, mo] = value.split('-').map(Number);
-  if (!y) return value;
-  if (!mo) return String(y);
-  return new Intl.DateTimeFormat('es-ES', { month: 'long', year: 'numeric' }).format(new Date(y, mo - 1, 1));
 }
 
 function productSchema(m: UsedMachine) {
@@ -87,7 +79,7 @@ export default async function MachinePage({ params }: Props) {
   const condition: [string, React.ReactNode][] = [
     ['Estado', m.estado],
     ...(m.horasUso ? [['Horas de uso', `${m.horasUso.toLocaleString('es-ES')} h`] as [string, string]] : []),
-    ['Revisión en taller', <>{m.revision.fecha && <>{monthLabel(m.revision.fecha)}. </>}{m.revision.resumen}</>],
+    ['Revisión en taller', <>{m.revision.fecha && <>{monthLabel(m.revision.fecha)} · </>}{m.revision.resumen}</>],
     ['Piezas sustituidas', m.piezasSustituidas.length ? m.piezasSustituidas.join(', ') : 'Ninguna necesaria'],
     ['Garantía', `${m.garantia}, por escrito`],
     ['Ubicación', m.ubicacion],
@@ -137,14 +129,22 @@ export default async function MachinePage({ params }: Props) {
                 </div>
                 <p className="used-links">
                   <InquiryButton machines={[toMachine(m)]} settings={settings} className="link-button">Prefiero dejar mis datos</InquiryButton>
-                  <span aria-hidden="true"> · </span>
-                  <Link href={`/comparar?ids=${encodeURIComponent(m.slug)}`}>Comparar con una nueva</Link>
                 </p>
               </>
             )}
             <p className="used-shipping">Envío a toda España. Te presupuestamos transporte e instalación.</p>
           </section>
         </div>
+
+        {!sold && (
+          <section className="detail-compare" aria-labelledby="comparar-titulo">
+            <div>
+              <h2 id="comparar-titulo">¿Y si fuera nueva?</h2>
+              <p>Pon esta {m.tipo.toLowerCase()} junto a modelos nuevos y compara precio, estado, garantía y ficha técnica, cara a cara.</p>
+            </div>
+            <Link className="btn btn-dark" href={`/comparar?ids=${encodeURIComponent(m.slug)}`}><Scale size={17} aria-hidden="true" /> Comparar con una nueva</Link>
+          </section>
+        )}
 
         {m.video && (
           <section className="used-block" aria-label="Vídeo">

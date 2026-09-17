@@ -12,9 +12,9 @@ export function Footer({ settings }: { settings: Settings }) {
         </p>
         <nav aria-label="Enlaces del pie">
           <Link href="/#maquinaria">Maquinaria</Link>
+          <Link href="/comparar">Comparar</Link>
           <Link href="/servicio-tecnico">Servicio técnico</Link>
           <Link href="/vender">Vender</Link>
-          <Link href="/comparar">Comparar</Link>
           <Link href="/privacidad">Aviso legal y privacidad</Link>
         </nav>
       </div>

@@ -1,7 +1,9 @@
 export type Photo={url:string;label:string;kind:'exterior'|'interior'|'detail'};
 export type Machine={id:string;brand:string;model:string;comparisonKey?:string;type:string;category:string;condition:'Nueva'|'Reacondicionada';description:string;functioning:string;images:Photo[];year:number|null;price:number|null;capacity:string;power:string;dimensions:string;voltage:string;warranty:string;leadTime:string;inspection:string;workDone:string;defects:string;life:string;availability:string;isDemo:boolean;published:boolean;
  /** Solo para uso interno (de dónde salen los datos). No se muestra en la web. */
- source:string};
+ source:string;
+ /** Solo máquinas de segunda mano: datos para el comparador. */
+ hours?:number|null;parts?:string[];reviewDate?:string;state?:string;location?:string};
 export type Settings={brand:string;email:string;whatsapp:string;phone:string;legalName:string;taxId:string;address:string;streetAddress:string;postalCode:string;locality:string;region:string;registry:string;foundedYear:number;openingHours:string;coverage:string;privacyEmail:string;showDemo:boolean;liveInquiries:boolean};
 
 // ─── DATOS DE TU EMPRESA ─────────────────────────────────────────────────
@@ -66,22 +68,3 @@ demos.push(
 const esedra=reference('demo-ifi-esedra','IFI','Esedra','Vitrina refrigerada de exposición','Heladería','ifi-esedra.jpg','Vitrina de exposición para heladería y pastelería. Las versiones, acabados y medidas se seleccionan según el producto y el espacio del establecimiento.','https://www.ifi.it/en/products/esedra/');
 demos.push(esedra);
 export function normalizeComparisonKey(value:string){return value.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');}
-export function machineComparisonKey(machine:Machine){return normalizeComparisonKey(machine.comparisonKey?.trim()||`${machine.brand} ${machine.model}`);}
-export function comparisonRows(ms:Machine[]){return [
- {group:'Inversión',label:'Precio de la máquina',values:ms.map(m=>money(m.price))},
- {group:'Inversión',label:'Envío e instalación',values:ms.map(()=> 'Se calculan para tu ubicación')},
- {group:'La máquina',label:'Estado',values:ms.map(m=>m.condition==='Nueva'?'Nueva · bajo propuesta':'Segunda mano · revisada')},
- {group:'La máquina',label:'Año de fabricación',values:ms.map(m=>m.year?String(m.year):'Sin confirmar')},
- {group:'La máquina',label:'Antigüedad',values:ms.map(m=>m.year?`${Math.max(0,new Date().getFullYear()-m.year)} años`:'Sin confirmar')},
- {group:'La máquina',label:'Funcionamiento',values:ms.map(m=>m.functioning||'Por documentar')},
- {group:'Rendimiento',label:'Capacidad',values:ms.map(m=>m.capacity||'Según configuración')},
- {group:'Rendimiento',label:'Potencia',values:ms.map(m=>m.power||'Sin confirmar')},
- {group:'Rendimiento',label:'Alimentación eléctrica',values:ms.map(m=>m.voltage||'Sin confirmar')},
- {group:'Rendimiento',label:'Dimensiones',values:ms.map(m=>m.dimensions||'Sin confirmar')},
- {group:'Estado y respaldo',label:'Revisión técnica',values:ms.map(m=>m.inspection)},
- {group:'Estado y respaldo',label:'Trabajos realizados',values:ms.map(m=>m.workDone|| (m.condition==='Nueva'?'No aplica':'Por documentar'))},
- {group:'Estado y respaldo',label:'Defectos conocidos',values:ms.map(m=>m.defects)},
- {group:'Estado y respaldo',label:'Vida útil restante',values:ms.map(m=>m.life)},
- {group:'Estado y respaldo',label:'Garantía',values:ms.map(m=>m.warranty)},
- {group:'Disponibilidad',label:'Disponibilidad',values:ms.map(m=>m.availability)},
- {group:'Disponibilidad',label:'Plazo de entrega',values:ms.map(m=>m.leadTime)}];}

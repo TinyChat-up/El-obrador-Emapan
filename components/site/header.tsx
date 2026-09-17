@@ -5,7 +5,7 @@ import { phoneDisplay, type Settings } from '@/lib/catalog';
 import { whatsappLink } from '@/lib/site';
 import { WhatsAppIcon } from './icons';
 
-export type Section = 'machines' | 'service' | 'sell' | 'none';
+export type Section = 'machines' | 'compare' | 'service' | 'sell' | 'none';
 
 export function Header({ settings, active = 'none' }: { settings: Settings; active?: Section }) {
   const current = (s: Section) => (active === s ? { className: 'is-active', 'aria-current': 'page' as const } : {});
@@ -20,6 +20,7 @@ export function Header({ settings, active = 'none' }: { settings: Settings; acti
           </Link>
           <nav className="masthead-nav" aria-label="Navegación principal">
             <Link {...current('machines')} href="/#maquinaria">Maquinaria</Link>
+            <Link {...current('compare')} href="/comparar">Comparar</Link>
             <Link {...current('service')} href="/servicio-tecnico">Servicio técnico</Link>
             <Link {...current('sell')} href="/vender">Vender</Link>
           </nav>

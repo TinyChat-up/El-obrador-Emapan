@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 // scroll y cabecera con sombra. Sin JavaScript todo se ve igual,
 // solo que quieto; con «reducir movimiento» no se anima nada.
 const REVEAL = [
-  '.brands-line li', '.doors li', '.section-head', '.tile', '.stock-note', '.review-inner > *',
+  '.brands-line li', '.doors li', '.duel article', '.detail-compare', '.cmp-section', '.section-head', '.tile', '.stock-note', '.craft > *', '.review-inner > *',
   '.contact-block .wrap > *', '.used-block', '.sell-hero > div', '.sell-model-grid article',
   '.commercial-note', '.offer-intro', '.offer-form', '.compare-title', '.sat-compare-controls',
   '.legal-page h2',
