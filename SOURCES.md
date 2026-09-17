@@ -1,4 +1,6 @@
-# Reference imagery — private demonstration catalogue
+# Reference imagery — manufacturer photos (permission required)
+
+> Estado a 17/09/2026: estas imágenes se publican en los modelos nuevos «bajo propuesta». Hace falta autorización escrita de cada fabricante o sustituirlas por fotos propias. Las URLs de origen se conservan solo aquí y en el campo interno `source`; la web ya no enlaza a ninguna de ellas.
 
 Downloaded 2026-09-13. These are actual product photographs, not images of the business inventory. No explicit open reuse licence was found. Confirm manufacturer/distributor permission or replace with owned photographs before public commercial use.
 

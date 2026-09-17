@@ -1,6 +1,6 @@
 import { storage } from './supabase';
 import { settings as empresa, demos, partnerBrands, type Settings } from './catalog';
-import { stock } from './stock';
+import { listedUsedMachines, toMachine } from './used-machines';
 
 export const runtime = () => ({ ...process.env, BUCKET: storage });
 
@@ -13,6 +13,7 @@ export function getSettings(): Settings {
     email: empresa.email || e.NOTIFICATION_EMAIL || '',
     privacyEmail: empresa.privacyEmail || e.NOTIFICATION_EMAIL || '',
     whatsapp: empresa.whatsapp || e.WHATSAPP_NUMBER || '',
+    phone: empresa.phone || (e.WHATSAPP_NUMBER ? '+' + e.WHATSAPP_NUMBER : ''),
     liveInquiries: empresa.liveInquiries || e.LIVE_INQUIRIES === 'true',
   };
 }
@@ -23,9 +24,7 @@ export function catalog() {
   const referenceMachines = demos.filter(
     m => m.published && partnerBrands.some(b => b.toLowerCase() === m.brand.toLowerCase()),
   );
-  const machines = stock.filter(
-    m => m.published && !['Vendida', 'Retirada'].includes(m.availability),
-  );
+  const machines = listedUsedMachines().map(toMachine);
   return { settings: getSettings(), machines, referenceMachines };
 }
 

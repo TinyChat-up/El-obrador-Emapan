@@ -1,0 +1,2 @@
+Fotos de las máquinas de segunda mano: una carpeta por máquina.
+Ejemplo: public/maquinas/carpigiani-labotronic-2019/frontal.jpg

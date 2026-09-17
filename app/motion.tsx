@@ -9,7 +9,8 @@ const REVEAL = [
   '.archive-workshop figure', '.archive-workshop > div', '.proposal-section > div:first-child',
   '.proposal-steps > div', '.sell-hero > div', '.sell-model-grid article', '.commercial-note',
   '.offer-intro', '.offer-form', '.technical', '.compare-title', '.sat-compare-controls',
-  '.legal-page h2', '.site-footer > div',
+  '.legal-page h2', '.site-footer > div', '.trust-grid article', '.warranty-panel', '.revision-intro',
+  '.revision-list li', '.brand-group', '.service-cards article', '.official-card', '.contract-band', '.coverage > *',
 ].join(',');
 
 export default function Motion() {

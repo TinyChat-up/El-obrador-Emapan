@@ -2,7 +2,7 @@
 
 La web es una aplicación Next.js en Vercel. **No usa base de datos ni panel de
 administración**: el catálogo y los datos de la empresa viven en el código
-(`lib/stock.ts` y `lib/catalog.ts`). De Supabase solo se usa Storage, para
+(`lib/used-machines.ts` y `lib/catalog.ts`). De Supabase solo se usa Storage, para
 guardar las fotografías que envían los clientes desde `/vender`.
 
 Las solicitudes no se almacenan en ninguna parte: te llegan por correo. Si el
@@ -41,6 +41,7 @@ git push
 | --- | --- |
 | `SUPABASE_URL` | URL del proyecto Supabase, sin barra final |
 | `SUPABASE_SERVICE_ROLE_KEY` | Clave secreta del servidor Supabase |
+| `NEXT_PUBLIC_SITE_URL` | Dirección pública con `https://` y sin barra final, p. ej. `https://www.tudominio.es` |
 | `NOTIFICATION_EMAIL` | Correo comercial que recibe solicitudes |
 | `WHATSAPP_NUMBER` | Número internacional para el botón «Continuar por WhatsApp», por ejemplo `34600111222` |
 | `LIVE_INQUIRIES` | `true` para producción, `false` para pruebas |
@@ -54,17 +55,8 @@ que hacer Redeploy**: un despliegue ya creado no las ve.
 
 ## 4. Gestionar el catálogo
 
-Todo desde el código, sin panel:
-
-- **Máquinas de segunda mano** → `lib/stock.ts`. Copia el ejemplo comentado del
-  principio del archivo, edítalo y haz push. Para retirar una máquina, borra su
-  bloque o pon `published:false`. También puedes marcar `availability:'Vendida'`
-  para conservar la ficha sin que aparezca en el catálogo.
-- **Fotografías** → guárdalas en `public/images/` y nómbralas en `fotos:[...]`.
-- **Datos de la empresa** → constante `settings` en `lib/catalog.ts`. El NIF, la
-  dirección y el correo de privacidad son obligatorios para publicar consultas
-  reales.
-- **Modelos nuevos de referencia** → array `demos` en `lib/catalog.ts`.
+Todo desde el código, sin panel. Instrucciones paso a paso en el
+[README](README.md#añadir-una-máquina-de-segunda-mano).
 
 ## 4 bis. Avisos
 
@@ -92,6 +84,28 @@ enlace `wa.me` que ve el cliente al terminar el formulario, y solo te escribe si
 Las fotografías admiten hasta **4 MiB por imagen** y las valoraciones **4 MiB en
 total** (entre 1 y 8 imágenes). Las fotos servidas en `/api/media/…` son
 accesibles para quien tenga su URL; no subas documentos confidenciales.
+
+## Dominio propio
+
+1. Vercel → proyecto → **Settings → Domains** → Add → escribe `tudominio.es` y
+   añade también `www.tudominio.es`. Elige cuál es el principal (recomendado
+   `www`) y deja que el otro redirija a él.
+2. En el panel de tu proveedor del dominio crea los registros DNS que indica
+   Vercel. Normalmente:
+   - `A` para `@` apuntando a la IP que muestra Vercel.
+   - `CNAME` para `www` apuntando al valor que muestra Vercel.
+   Si Vercel lo propone, también puedes cambiar los *nameservers* a Vercel.
+3. Espera a que Vercel marque el dominio como **Valid Configuration** (de
+   minutos a unas horas). El certificado HTTPS se crea solo.
+4. Settings → Environment Variables → `NEXT_PUBLIC_SITE_URL` =
+   `https://www.tudominio.es` (Production) → **Redeploy**. Con esto se
+   actualizan canónicas, sitemap, robots y datos estructurados.
+5. Da de alta el dominio en Google Search Console y envía
+   `https://www.tudominio.es/sitemap.xml`.
+6. Opcional: verifica el dominio en Resend y pon `FROM_EMAIL=avisos@tudominio.es`.
+
+Las vistas previas de Vercel (`VERCEL_ENV=preview`) se sirven con `noindex` y un
+robots.txt que bloquea todo, para que Google solo indexe producción.
 
 ## Referencias oficiales
 

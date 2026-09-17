@@ -2,6 +2,8 @@
 // Environment Variables con estos mismos nombres (ver .env.example).
 declare namespace NodeJS {
   interface ProcessEnv {
+    /** Dirección pública con https y sin barra final, p. ej. https://www.tudominio.es. */
+    NEXT_PUBLIC_SITE_URL?: string;
     /** URL del proyecto Supabase, sin barra final. Necesaria para las fotos. */
     SUPABASE_URL?: string;
     /** Clave de servidor de Supabase (service_role o secret). Para las fotos. */
